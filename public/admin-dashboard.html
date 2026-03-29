@@ -12,36 +12,41 @@
 <body class="dashboard-layout">
     <!-- Sidebar -->
     <aside class="sidebar glass-panel">
-        <div class="sidebar-logo logo">
-            <i class="fas fa-graduation-cap"></i>
-            CollegeHub
+        <div class="sidebar-logo logo flex justify-between items-center w-full">
+            <div>
+                <i class="fas fa-graduation-cap"></i>
+                <span>CollegeHub</span>
+            </div>
+            <button class="menu-toggle md:hidden" style="display: none; background: transparent; border: none; color: white;" onclick="document.querySelector('.sidebar').classList.remove('open')">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         <nav class="nav-links">
             <a href="#" class="nav-item active" onclick="showSection('dashboard')">
-                <i class="fas fa-th-large"></i> Dashboard
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
             </a>
             <a href="#" class="nav-item" onclick="showSection('admissions')">
-                <i class="fas fa-file-invoice"></i> Admissions
+                <i class="fas fa-file-invoice"></i> <span>Admissions</span>
             </a>
             <a href="#" class="nav-item" onclick="showSection('courses')">
-                <i class="fas fa-book-open"></i> Courses
+                <i class="fas fa-book-open"></i> <span>Courses</span>
             </a>
             <a href="#" class="nav-item" onclick="showSection('students')">
-                <i class="fas fa-users"></i> Students
+                <i class="fas fa-users"></i> <span>Students</span>
             </a>
             <a href="#" class="nav-item" onclick="showSection('lms-admin')">
-                <i class="fas fa-chalkboard-teacher"></i> LMS Control
+                <i class="fas fa-chalkboard-teacher"></i> <span>LMS Control</span>
             </a>
             <a href="#" class="nav-item" onclick="showSection('notices-admin')">
-                <i class="fas fa-bullhorn"></i> Notice Board
+                <i class="fas fa-bullhorn"></i> <span>Notice Board</span>
             </a>
             <a href="#" class="nav-item" onclick="showSection('messages-admin')">
-                <i class="fas fa-comment-alt"></i> Support Chat
+                <i class="fas fa-comment-alt"></i> <span>Support Chat</span>
             </a>
         </nav>
         <div style="margin-top: auto; border-top: 1px solid var(--border-glass); padding-top: 1.5rem;">
             <button onclick="AuthService.logout()" class="btn btn-danger w-full">
-                <i class="fas fa-sign-out-alt"></i> Logout
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
             </button>
         </div>
     </aside>
@@ -49,9 +54,14 @@
     <!-- Main Content -->
     <main class="main-content">
         <header class="dashboard-header reveal">
-            <div>
-                <h1 id="page-title">Dashboard Overview</h1>
-                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Welcome back, Administrator</p>
+            <div class="flex items-center gap-3">
+                <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" style="display: none; background: transparent; border: none; font-size: 1.5rem; color: var(--text-primary); cursor: pointer;">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 id="page-title">Dashboard Overview</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.25rem;">Welcome back, Administrator</p>
+                </div>
             </div>
             <div class="flex gap-4 items-center">
                 <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">

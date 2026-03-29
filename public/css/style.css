@@ -822,7 +822,7 @@ select.form-input option {
         --sidebar-width: 80px;
     }
     
-    .sidebar-logo span, .nav-item span {
+    .sidebar-logo span, .nav-item span, .sidebar button span {
         display: none;
     }
     
@@ -847,6 +847,8 @@ select.form-input option {
 }
 
 @media (max-width: 768px) {
+    .menu-toggle { display: block !important; }
+    
     .main-content {
         padding: 1.5rem;
         margin-left: 0; /* Sidebar might be hidden or toggled on mobile */
@@ -860,6 +862,12 @@ select.form-input option {
 
     .sidebar.open {
         transform: translateX(0);
+        width: 250px;
+        box-shadow: var(--shadow-glass);
+    }
+    
+    .sidebar.open .sidebar-logo span, .sidebar.open .nav-item span, .sidebar.open button span {
+        display: inline;
     }
     
     .dashboard-header {
@@ -900,7 +908,7 @@ select.form-input option {
     .table-container { 
         padding: 0.5rem !important; 
     }
-    body {
+    body:not(.dashboard-layout) {
         padding: 1rem;
     }
     .login-card, .register-card {

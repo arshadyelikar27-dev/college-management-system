@@ -104,11 +104,17 @@ const forgotPassword = async (req, res) => {
             text: `Your securely generated OTP for password reset is ${otp}. It is valid for 10 minutes. Do not share this with anyone.`
         };
 
-        await transporter.sendMail(mailOptions);
-        res.json({ message: "OTP sent successfully to your email." });
+        console.log(`[OTP GENERATED] Email: ${email}, OTP: ${otp}`);
+        try {
+            await transporter.sendMail(mailOptions);
+            res.json({ message: "OTP sent successfully to your email." });
+        } catch (mailError) {
+            console.error("Forgot password email error:", mailError.message);
+            res.json({ message: "OTP generated successfully! However, the email failed to send (check logs). If this is a demo, check the server console for the OTP." });
+        }
     } catch (error) {
         console.error("Forgot password error:", error);
-        res.status(500).json({ message: "Failed to send OTP email. Please ensure your EMAIL_USER and EMAIL_PASS environment variables are correctly configured for Nodemailer." });
+        res.status(500).json({ message: "An unexpected error occurred." });
     }
 };
 
