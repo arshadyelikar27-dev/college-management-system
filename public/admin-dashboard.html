@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | CollegeHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="js/theme.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar glass-panel">
+        <div class="sidebar-logo logo">
+            <i class="fas fa-graduation-cap"></i>
+            CollegeHub
+        </div>
+        <nav class="nav-links">
+            <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('admissions')">
+                <i class="fas fa-file-invoice"></i> Admissions
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('courses')">
+                <i class="fas fa-book-open"></i> Courses
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('students')">
+                <i class="fas fa-users"></i> Students
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('lms-admin')">
+                <i class="fas fa-chalkboard-teacher"></i> LMS Control
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('notices-admin')">
+                <i class="fas fa-bullhorn"></i> Notice Board
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('messages-admin')">
+                <i class="fas fa-comment-alt"></i> Support Chat
+            </a>
+        </nav>
+        <div style="margin-top: auto; border-top: 1px solid var(--border-glass); padding-top: 1.5rem;">
+            <button onclick="AuthService.logout()" class="btn btn-danger w-full">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="dashboard-header reveal">
+            <div>
+                <h1 id="page-title">Dashboard Overview</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Welcome back, Administrator</p>
+            </div>
+            <div class="flex gap-4 items-center">
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <div class="user-profile">
+                    <div class="avatar">A</div>
+                    <span style="font-weight: 600;">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Stats Section -->
+        <section id="dashboard-section" class="reveal">
+            <div class="stats-grid">
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="color: var(--primary);"><i class="fas fa-user-graduate"></i></div>
+                    <div class="stat-value" id="stat-students">0</div>
+                    <div class="stat-label">Registered Students</div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="color: var(--secondary);"><i class="fas fa-layer-group"></i></div>
+                    <div class="stat-value" id="stat-courses">0</div>
+                    <div class="stat-label">Academic Programs</div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="color: var(--accent);"><i class="fas fa-clock"></i></div>
+                    <div class="stat-value" id="stat-admissions">0</div>
+                    <div class="stat-label">Pending Requests</div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="color: var(--success);"><i class="fas fa-bell"></i></div>
+                    <div class="stat-value" id="stat-notices">0</div>
+                    <div class="stat-label">Broadcasted Notices</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admissions Table -->
+        <section id="admissions-section" class="hidden reveal">
+            <div class="section-header">
+                <h2>Admission Records</h2>
+                <div class="flex gap-2">
+                    <button class="btn btn-secondary btn-sm" onclick="loadAdmissions()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <div class="glass-card">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Requested Course</th>
+                                <th>Score</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admissions-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Courses Management -->
+        <section id="courses-section" class="hidden reveal">
+            <div class="section-header">
+                <h2>Course Directory</h2>
+                <button class="btn btn-primary" onclick="openCourseModal()">
+                    <i class="fas fa-plus"></i> New Course
+                </button>
+            </div>
+            <div class="glass-card">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Program Name</th>
+                                <th>Duration</th>
+                                <th>Fee</th>
+                                <th>Management</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courses-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Students Registry -->
+        <section id="students-section" class="hidden reveal">
+            <div class="section-header">
+                <h2>Student Registry</h2>
+                <div class="flex gap-2">
+                    <button class="btn btn-secondary btn-sm" onclick="loadStudents()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <div class="glass-card">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Institutional Email</th>
+                                <th>Enrolled Date</th>
+                                <th style="text-align: right;">Control</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- LMS Control Section -->
+        <section id="lms-admin-section" class="hidden reveal">
+            <div class="stats-grid">
+                <div class="glass-card p-8">
+                    <h3 class="mb-6"><i class="fas fa-file-upload text-gradient"></i> Study Material</h3>
+                    <form id="material-form">
+                        <div class="form-group">
+                            <label class="form-label">Material Title</label>
+                            <input type="text" id="mat-title" class="form-input" placeholder="e.g. Advanced Calculus PDF" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Select Course</label>
+                            <select id="mat-course" class="form-input" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">File Asset</label>
+                            <input type="file" id="mat-file" class="form-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full mt-2">Publish Material</button>
+                    </form>
+                </div>
+                <div class="glass-card p-8">
+                    <h3 class="mb-6"><i class="fas fa-check-circle text-gradient"></i> Assignment Stream</h3>
+                    <div id="submissions-list" class="custom-scroll flex flex-col gap-3" style="max-height: 400px; overflow-y: auto;">
+                        <!-- Dynamic list -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notice Board Admin -->
+        <section id="notices-admin-section" class="hidden reveal">
+            <div class="stats-grid" style="grid-template-columns: 1fr 1.2fr;">
+                <div class="glass-card p-8">
+                    <h3 class="mb-6">Broadcast New Announcement</h3>
+                    <form id="notice-form">
+                        <div class="form-group">
+                            <label class="form-label">Notice Title</label>
+                            <input type="text" id="not-title" class="form-input" placeholder="Subject of announcement" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Type</label>
+                            <select id="not-type" class="form-input">
+                                <option value="Info">General Info</option>
+                                <option value="Warning">Warning</option>
+                                <option value="Urgent">Urgent Action</option>
+                                <option value="Success">Success/Celebration</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Content Description</label>
+                            <textarea id="not-content" class="form-input" rows="5" placeholder="Write full details..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full mt-2">
+                            Push to All Students <i class="fas fa-paper-plane ml-2"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="glass-card p-8 flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 style="margin: 0;"><i class="fas fa-history text-gradient"></i> History</h3>
+                        <button class="btn btn-danger btn-sm" onclick="clearAllNotices()">
+                            <i class="fas fa-broom"></i> Clear All
+                        </button>
+                    </div>
+                    <div id="admin-notices-list" class="flex-1 custom-scroll flex flex-col gap-4" style="max-height: 500px; overflow-y: auto;">
+                        <!-- Notices will be listed here with delete option -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Support Chat Admin -->
+        <section id="messages-admin-section" class="hidden reveal">
+            <div class="stats-grid" style="grid-template-columns: 320px 1fr;">
+                <div class="glass-card flex flex-col" style="height: 600px;">
+                    <div class="p-6 border-b">
+                        <h3 style="font-size: 1.1rem;"><i class="fas fa-ticket-alt text-gradient"></i> Active Tickets</h3>
+                    </div>
+                    <div id="chat-users-list" class="flex-1 custom-scroll p-2">
+                        <!-- Student list for chat -->
+                    </div>
+                </div>
+                <div class="glass-card flex flex-col" style="height: 600px;">
+                    <div id="chat-header" class="p-6 border-b flex justify-between items-center">
+                        <span class="font-bold text-gradient">Support Desk</span>
+                        <span id="chat-status" class="badge badge-pending">Idle</span>
+                    </div>
+                    <div id="chat-box" class="chat-container flex-1">
+                        <div class="flex flex-col items-center justify-center h-full opacity-30">
+                            <i class="fas fa-comments mb-4" style="font-size: 4rem;"></i>
+                            <p>Select a student to start conversation</p>
+                        </div>
+                    </div>
+                    <div class="p-6 border-t bg-surface" style="background: rgba(15, 23, 42, 0.4);">
+                        <div class="flex gap-3">
+                            <input type="text" id="chat-input" class="form-input" placeholder="Compose a response...">
+                            <button onclick="sendChatMessage()" class="btn btn-primary" style="padding: 0 1.5rem;">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modals... (Same as before but student details modal updated) -->
+        <div id="course-modal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); align-items: center; justify-content: center; z-index: 1000;">
+             <div class="glass-card reveal" style="width: 100%; max-width: 600px; padding: 3rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2>Define Course</h2>
+                    <button onclick="closeCourseModal()"><i class="fas fa-times"></i></button>
+                </div>
+                <form id="course-form">
+                    <input type="text" id="course-name" class="form-input mb-4" placeholder="Course Name" required>
+                    <input type="text" id="course-code" class="form-input mb-4" placeholder="Course Code" required>
+                    <textarea id="course-desc" class="form-input mb-4" placeholder="Description"></textarea>
+                    <input type="text" id="course-duration" class="form-input mb-4" placeholder="Duration">
+                    <input type="number" id="course-fee" class="form-input mb-4" placeholder="Fee">
+                    <button type="submit" class="btn btn-primary w-full">Save Course</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="student-modal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem;">
+            <div class="glass-card reveal custom-scroll" style="width: 100%; max-width: 600px; padding: 2.5rem; max-height: 90vh; overflow-y: auto;">
+                <div id="student-details-content"></div>
+                <button class="btn btn-secondary w-full mt-6" onclick="closeStudentModal()">Close</button>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        const socket = io();
+        
+        // Security
+        if (!AuthService.isAuthenticated() || AuthService.getCurrentUser().role !== 'admin') {
+            window.location.href = 'login.html';
+        }
+
+        const sections = {
+            dashboard: document.getElementById('dashboard-section'),
+            admissions: document.getElementById('admissions-section'),
+            courses: document.getElementById('courses-section'),
+            students: document.getElementById('students-section'),
+            'lms-admin': document.getElementById('lms-admin-section'),
+            'notices-admin': document.getElementById('notices-admin-section'),
+            'messages-admin': document.getElementById('messages-admin-section')
+        };
+
+        function showSection(name) {
+            Object.values(sections).forEach(el => el.classList.add('hidden'));
+            sections[name].classList.remove('hidden');
+            document.getElementById('page-title').textContent = name.toUpperCase().replace('-', ' ');
+            
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active');
+                if(el.getAttribute('onclick').includes(name)) el.classList.add('active');
+            });
+
+            if (name === 'dashboard') loadStats();
+            if (name === 'admissions') loadAdmissions();
+            if (name === 'courses') loadCourses();
+            if (name === 'students') loadStudents();
+            if (name === 'lms-admin') loadLMSControl();
+            if (name === 'notices-admin') loadAdminNotices();
+            if (name === 'messages-admin') loadChatUsers();
+        }
+
+        async function loadStats() {
+            const stats = await Api.get('/stats');
+            document.getElementById('stat-students').textContent = stats.students;
+            document.getElementById('stat-courses').textContent = stats.courses;
+            document.getElementById('stat-admissions').textContent = stats.admissions;
+            document.getElementById('stat-notices').textContent = stats.notices;
+        }
+
+        async function loadAdmissions() {
+            const list = await Api.get('/admissions/all');
+            const tbody = document.getElementById('admissions-table');
+            tbody.innerHTML = list.map(app => `
+                <tr>
+                    <td class="truncate" title="${app.studentName}">${app.studentName}</td>
+                    <td class="truncate" title="${app.courseName}">${app.courseName}</td>
+                    <td>${app.personalDetails.marks}%</td>
+                    <td><span class="badge badge-${app.status.toLowerCase()}">${app.status}</span></td>
+                    <td>
+                        ${app.status === 'Pending' ? `
+                            <button class="btn btn-primary" onclick="updateStatus('${app.id}', 'Approved')">Approve</button>
+                        ` : '<i class="fas fa-check text-success"></i>'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function updateStatus(id, status) {
+            await Api.put(`/admissions/${id}/status`, { status });
+            loadAdmissions();
+        }
+
+        async function loadCourses() {
+            const list = await Api.get('/courses');
+            document.getElementById('courses-table').innerHTML = list.map(c => `
+                <tr>
+                    <td><code>${c.code}</code></td>
+                    <td>${c.name}</td>
+                    <td>${c.duration}</td>
+                    <td>₹${parseInt(c.fee).toLocaleString()}</td>
+                    <td><button class="btn btn-danger" onclick="deleteCourse('${c.id}')"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadStudents() {
+            const list = await Api.get('/users/students');
+            document.getElementById('students-table').innerHTML = list.map(s => `
+                <tr>
+                    <td class="truncate" title="${s.name}">${s.name}</td>
+                    <td class="truncate" title="${s.email}">${s.email}</td>
+                    <td>${new Date(s.createdAt).toLocaleDateString()}</td>
+                    <td style="text-align: right;">
+                        <div class="flex gap-2 justify-end">
+                            <button class="btn btn-secondary btn-sm" onclick="openStudentModal('${s.id}')"><i class="fas fa-eye"></i></button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteStudent('${s.id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function deleteCourse(id) {
+            if (confirm('Are you sure you want to delete this course?')) {
+                try {
+                    await Api.delete(`/courses/${id}`);
+                    loadCourses();
+                    loadStats();
+                } catch (error) {
+                    alert('Error deleting course: ' + error.message);
+                }
+            }
+        }
+
+        async function deleteStudent(id) {
+            if (confirm('Are you sure you want to delete this student and all related data?')) {
+                try {
+                    await Api.delete(`/users/students/${id}`);
+                    loadStudents();
+                    loadStats();
+                } catch (error) {
+                    alert('Error deleting student: ' + error.message);
+                }
+            }
+        }
+
+        async function loadAdminNotices() {
+            const notices = await Api.get('/notices');
+            const noticesList = document.getElementById('admin-notices-list');
+            if (notices.length === 0) {
+                noticesList.innerHTML = '<p class="text-center opacity-50 mt-4">No announcements yet.</p>';
+                return;
+            }
+            noticesList.innerHTML = notices.map(notice => `
+                <div class="glass-panel p-4 flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-gradient">${notice.title}</h4>
+                        <span class="badge badge-${notice.type.toLowerCase()}">${notice.type}</span>
+                    </div>
+                    <p class="text-sm text-secondary">${notice.content}</p>
+                    <div class="flex justify-between items-center text-xs opacity-70 mt-2">
+                        <span>${new Date(notice.createdAt).toLocaleString()}</span>
+                        <button class="btn btn-danger btn-sm" onclick="deleteNotice('${notice.id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function deleteNotice(id) {
+            if (confirm('Are you sure you want to delete this announcement?')) {
+                try {
+                    await Api.delete(`/notices/${id}`);
+                    loadAdminNotices();
+                    loadStats();
+                } catch (error) {
+                    alert('Error deleting notice: ' + error.message);
+                }
+            }
+        }
+
+        async function clearAllNotices() {
+            if (confirm('CRITICAL: This will delete ALL announcements from the board for all students. Proceed?')) {
+                try {
+                    await Api.delete('/notices');
+                    loadAdminNotices();
+                    loadStats();
+                } catch (error) {
+                    alert('Error clearing notices: ' + error.message);
+                }
+            }
+        }
+
+        // Notices Logic
+        document.getElementById('notice-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                title: document.getElementById('not-title').value,
+                type: document.getElementById('not-type').value,
+                content: document.getElementById('not-content').value
+            };
+            await Api.post('/notices', data);
+            alert('Notice Broadcasted!');
+            e.target.reset();
+            loadAdminNotices();
+            loadStats();
+        });
+
+        // LMS Logic
+        async function loadLMSControl() {
+            const courses = await Api.get('/courses');
+            const select = document.getElementById('mat-course');
+            select.innerHTML = courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            
+            const subs = await Api.get('/assignments/all');
+            document.getElementById('submissions-list').innerHTML = subs.map(s => `
+                <div class="glass-panel p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="font-bold text-gradient">${s.studentName || 'Student Account'}</p>
+                        <div class="flex gap-2">
+                            <span class="badge badge-submitted">Assignment</span>
+                            <button class="btn btn-danger btn-sm" style="padding: 0.3rem 0.6rem;" onclick="deleteAssignment('${s.id}')">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-secondary mb-3">${s.title}</p>
+                    <a href="${s.fileUrl}" download="${s.studentName}_${s.title}" class="btn btn-secondary btn-sm w-full font-bold">
+                        <i class="fas fa-external-link-alt"></i> View Submission
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        async function deleteAssignment(id) {
+            if (confirm('Permanently delete this assignment submission?')) {
+                try {
+                    await Api.delete(`/assignments/${id}`);
+                    loadLMSControl();
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+
+        document.getElementById('material-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('title', document.getElementById('mat-title').value);
+            formData.append('courseId', document.getElementById('mat-course').value);
+            formData.append('file', document.getElementById('mat-file').files[0]);
+
+            const token = localStorage.getItem('token');
+            const res = await fetch('/api/materials', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+            if(res.ok) {
+                alert('Material Uploaded!');
+                e.target.reset();
+            }
+        });
+
+        // Messaging Logic
+        let activeChatStudentId = null;
+        async function loadChatUsers() {
+            const students = await Api.get('/users/students');
+            document.getElementById('chat-users-list').innerHTML = students.map(s => `
+                <div class="nav-item cursor-pointer" onclick="openChat('${s.id}', '${s.name}')">
+                    <i class="fas fa-user-circle"></i> ${s.name}
+                </div>
+            `).join('');
+        }
+
+        async function openChat(sid, name) {
+            activeChatStudentId = sid;
+            document.getElementById('chat-status').textContent = 'Connected';
+            document.getElementById('chat-status').className = 'badge badge-approved';
+            
+            const allMsgs = await Api.get('/messages');
+            const studentMsgs = allMsgs.filter(m => m.studentId === sid);
+            renderMessages(studentMsgs);
+        }
+
+        function renderMessages(msgs) {
+            const box = document.getElementById('chat-box');
+            if (msgs.length === 0) {
+                box.innerHTML = `<div class="flex h-full items-center justify-center opacity-30"><p>No messages yet. Send a response to start.</p></div>`;
+                return;
+            }
+            const user = AuthService.getCurrentUser();
+            box.innerHTML = msgs.map(m => `
+                <div class="message ${m.senderId === user.id ? 'message-sent' : 'message-received'}">
+                    <div style="font-size: 0.7rem; opacity: 0.6; margin-bottom: 0.25rem;">
+                        ${m.senderId === user.id ? 'You' : (m.senderId === 'ai-bot' ? '🤖 AI Bot' : m.senderName)}
+                    </div>
+                    ${m.content}
+                </div>
+            `).join('');
+            box.scrollTop = box.scrollHeight;
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            if(!input.value || !activeChatStudentId) return;
+            await Api.post('/messages', { content: input.value, receiverId: activeChatStudentId });
+            input.value = '';
+            openChat(activeChatStudentId, document.getElementById('chat-header').textContent.split('with ')[1]);
+        }
+
+        socket.on('new-message', (msg) => {
+            if(activeChatStudentId === msg.studentId) {
+                openChat(activeChatStudentId, document.getElementById('chat-header').textContent.split('with ')[1]);
+            }
+        });
+
+        // Modals
+        function openCourseModal() { document.getElementById('course-modal').style.display = 'flex'; }
+        function closeCourseModal() { document.getElementById('course-modal').style.display = 'none'; }
+        function closeStudentModal() { document.getElementById('student-modal').style.display = 'none'; }
+        
+        async function openStudentModal(id) {
+            document.getElementById('student-modal').style.display = 'flex';
+            document.getElementById('student-details-content').innerHTML = '<div class="text-center p-8"><i class="fas fa-spinner fa-spin fa-3x text-primary"></i><p class="mt-4">Loading student profile...</p></div>';
+
+            try {
+                const [students, admissions, assignments] = await Promise.all([
+                    Api.get('/users/students'),
+                    Api.get('/admissions/all'),
+                    Api.get('/assignments/all')
+                ]);
+
+                const s = students.find(u => u.id === id);
+                if (!s) throw new Error('Student not found');
+
+                const studentAdmissions = admissions.filter(a => a.studentId === id);
+                const studentAssignments = assignments.filter(a => a.studentId === id);
+
+                const enrolledCourses = studentAdmissions.filter(a => a.status === 'Approved' || a.status === 'Paid');
+
+                document.getElementById('student-details-content').innerHTML = `
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem; padding: 1rem 0;">
+                        <!-- Header Profile Info -->
+                        <div style="display: flex; align-items: flex-start; gap: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass);">
+                            <div style="width: 100px; height: 100px; border-radius: 12px; border: 2px solid var(--primary); background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; font-weight: bold; flex-shrink: 0; box-shadow: 0 10px 20px rgba(0,0,0,0.3); overflow: hidden;">
+                                ${s.avatar ? '<img src="' + s.avatar + '" style="width: 100%; height: 100%; object-fit: cover;">' : s.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div style="flex: 1;">
+                                <h2 style="margin: 0 0 0.5rem 0; font-size: 1.6rem; color: var(--text-main);">${s.name}</h2>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+                                    <div>
+                                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase;">Email</p>
+                                        <p style="margin: 0; color: #e2e8f0; font-size: 0.9rem;">${s.email}</p>
+                                    </div>
+                                    <div>
+                                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase;">Mobile</p>
+                                        <p style="margin: 0; color: #e2e8f0; font-size: 0.9rem;">${s.phone || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase;">Enrollment No</p>
+                                        <p style="margin: 0; color: #e2e8f0; font-size: 0.9rem; font-family: monospace;">${s.enrollNumber || 'PENDING'}</p>
+                                    </div>
+                                    <div>
+                                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase;">Blood Group</p>
+                                        <p style="margin: 0; color: #ef4444; font-size: 0.9rem; font-weight: bold;">${s.bloodGroup || 'N/A'}</p>
+                                    </div>
+                                    <div style="grid-column: span 2;">
+                                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase;">Address</p>
+                                        <p style="margin: 0; color: #e2e8f0; font-size: 0.9rem;">${s.address || 'N/A'}</p>
+                                    </div>
+                                    <div style="grid-column: span 2;">
+                                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.75rem; opacity: 0.8;">
+                                            <i class="fas fa-calendar-alt" style="width: 15px; color: var(--primary);"></i> Joined: ${new Date(s.createdAt).toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Stats Grid -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="glass-card" style="padding: 1.2rem; text-align: center; border-left: 4px solid var(--primary);">
+                                <h4 class="text-gradient" style="margin: 0; font-size: 2rem; font-weight: 800; line-height: 1;">${enrolledCourses.length}</h4>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Active Courses</p>
+                            </div>
+                            <div class="glass-card" style="padding: 1.2rem; text-align: center; border-left: 4px solid var(--secondary);">
+                                <h4 class="text-gradient" style="margin: 0; font-size: 2rem; font-weight: 800; line-height: 1;">${studentAssignments.length}</h4>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Assignments</p>
+                            </div>
+                        </div>
+
+                        <!-- Course Enrollments Section -->
+                        <div>
+                            <h4 style="margin: 0 0 1rem 0; font-size: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-graduation-cap text-gradient"></i> Course Enrollments
+                            </h4>
+                            <div class="custom-scroll" style="display: flex; flex-direction: column; gap: 0.8rem; max-height: 160px; overflow-y: auto; padding-right: 5px;">
+                                ${studentAdmissions.length > 0 ? studentAdmissions.map(a => `
+                                    <div class="glass-panel" style="padding: 1rem; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+                                        <div>
+                                            <p style="margin: 0; font-weight: 600; color: var(--text-main); font-size: 0.95rem;">${a.courseName}</p>
+                                            <p style="margin: 0.3rem 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Applied: ${new Date(a.appliedAt).toLocaleDateString()}</p>
+                                        </div>
+                                        <span class="badge badge-${a.status.toLowerCase()}">${a.status}</span>
+                                    </div>
+                                `).join('') : '<div class="glass-panel" style="padding: 1.5rem; text-align: center; color: var(--text-secondary); font-style: italic;">No course applications yet</div>'}
+                            </div>
+                        </div>
+
+                        <!-- Assignments Section -->
+                        <div>
+                            <h4 style="margin: 0 0 1rem 0; font-size: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-tasks text-gradient"></i> Recent Assignments
+                            </h4>
+                            <div class="custom-scroll" style="display: flex; flex-direction: column; gap: 0.8rem; max-height: 160px; overflow-y: auto; padding-right: 5px;">
+                                ${studentAssignments.length > 0 ? studentAssignments.map(a => {
+                                    const relatedCourse = admissions.find(adm => adm.courseId === a.courseId)?.courseName || 'General';
+                                    return `
+                                    <div class="glass-panel" style="padding: 1rem; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+                                        <div style="flex: 1; min-width: 0; padding-right: 1rem;">
+                                            <p style="margin: 0; font-weight: 600; color: var(--text-main); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${a.title}</p>
+                                            <p style="margin: 0.3rem 0 0 0; font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Course: ${relatedCourse}</p>
+                                        </div>
+                                        <span class="badge badge-${a.status === 'Graded' ? 'approved' : 'submitted'}">${a.status}</span>
+                                    </div>
+                                    `;
+                                }).join('') : '<div class="glass-panel" style="padding: 1.5rem; text-align: center; color: var(--text-secondary); font-style: italic;">No assignments submitted</div>'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error(error);
+                document.getElementById('student-details-content').innerHTML = `
+                    <div class="text-center p-6 text-danger">
+                        <i class="fas fa-exclamation-triangle mb-2 text-2xl"></i>
+                        <p>Error loading student data. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+
+        // Init
+        showSection('dashboard');
+    </script>
+</body>
+</html>

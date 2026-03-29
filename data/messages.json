@@ -1,0 +1,144 @@
+[
+  {
+    "id": "5725ce12-7ecf-4124-99e3-03315a3b7fab",
+    "senderId": "9c5d594d-3509-4996-83bd-b3be83416cff",
+    "receiverId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "studentId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "content": "Hi",
+    "timestamp": "2026-03-15T03:07:55.737Z"
+  },
+  {
+    "id": "bfbc7b65-8ffd-435b-8424-a5ce8160c5fe",
+    "senderId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "receiverId": "admin",
+    "studentId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "content": "I want to know which courses are there?",
+    "timestamp": "2026-03-15T03:43:50.804Z"
+  },
+  {
+    "id": "b847eb19-f0e9-4b4d-81ed-88089cdd4164",
+    "senderId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "senderName": "Arshad Yelikar",
+    "receiverId": "admin",
+    "studentId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "content": "hi",
+    "timestamp": "2026-03-15T03:47:34.361Z"
+  },
+  {
+    "id": "930ce911-3e15-4979-8457-77ac4f110a7f",
+    "senderId": "9c5d594d-3509-4996-83bd-b3be83416cff",
+    "senderName": "System Administrator",
+    "receiverId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "studentId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "content": "hello",
+    "timestamp": "2026-03-15T03:48:08.800Z"
+  },
+  {
+    "id": "1597074f-a801-4265-9b14-f082073ab293",
+    "senderId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "senderName": "Arshad Yelikar",
+    "receiverId": "admin",
+    "studentId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "content": "I want know all courses fees",
+    "timestamp": "2026-03-15T03:48:40.190Z"
+  },
+  {
+    "id": "72c88e90-c327-470e-a287-c32552c550e9",
+    "senderId": "ai-bot",
+    "senderName": "CollegeHub Bot",
+    "receiverId": "test-id",
+    "studentId": "test-id",
+    "content": "You can manage your payments in the 'My Applications' section. Once an application is approved, a 'Pay Fee' button will appear. We accept all major digital payment methods.",
+    "timestamp": "2026-03-15T03:50:12.989Z"
+  },
+  {
+    "id": "65a29a67-2aad-4e69-a64f-ce7649ffdc53",
+    "senderId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "senderName": "Arshad Yelikar",
+    "receiverId": "admin",
+    "studentId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "content": "I want to know all courses fees",
+    "timestamp": "2026-03-15T03:53:22.761Z"
+  },
+  {
+    "id": "4dcedb84-4151-421a-a92d-eff10fd1b895",
+    "senderId": "b360aabf-e3fe-4c76-961e-569f20d7a3d5",
+    "senderName": "Zaid Khan",
+    "receiverId": "admin",
+    "studentId": "b360aabf-e3fe-4c76-961e-569f20d7a3d5",
+    "content": "Hi",
+    "timestamp": "2026-03-18T08:32:39.408Z"
+  },
+  {
+    "id": "cfe068ee-ceeb-4f05-9dab-eab3e98db5f9",
+    "senderId": "9c5d594d-3509-4996-83bd-b3be83416cff",
+    "senderName": "System Administrator",
+    "receiverId": "b360aabf-e3fe-4c76-961e-569f20d7a3d5",
+    "studentId": "b360aabf-e3fe-4c76-961e-569f20d7a3d5",
+    "content": "Hello",
+    "timestamp": "2026-03-18T08:34:19.396Z"
+  },
+  {
+    "id": "96b9f93a-0463-48ff-a623-08a5782af535",
+    "senderId": "b360aabf-e3fe-4c76-961e-569f20d7a3d5",
+    "senderName": "Zaid Khan",
+    "receiverId": "admin",
+    "studentId": "b360aabf-e3fe-4c76-961e-569f20d7a3d5",
+    "content": "I have problem in addmission process",
+    "timestamp": "2026-03-18T08:37:14.424Z"
+  },
+  {
+    "id": "40d334b6-ec1b-488e-9919-4fa1cfc0c9e5",
+    "senderId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "senderName": "Prathmesh Kotwal",
+    "receiverId": "admin",
+    "studentId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "content": "hi sir ,",
+    "timestamp": "2026-03-18T08:44:46.864Z"
+  },
+  {
+    "id": "7f15c2db-5074-44b4-b19f-b9f0824bd6c8",
+    "senderId": "ai-bot",
+    "senderName": "Assistant Bot",
+    "receiverId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "studentId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "content": "Hello! I am the CollegeHub AI Bot. Ask me about courses, fees, materials, or your ID card!",
+    "timestamp": "2026-03-18T08:44:47.939Z"
+  },
+  {
+    "id": "6be7d50b-4628-4bfb-b09f-9b56f7ece7b9",
+    "senderId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "senderName": "Prathmesh Kotwal",
+    "receiverId": "admin",
+    "studentId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "content": "I want to know my admission status",
+    "timestamp": "2026-03-18T08:45:21.581Z"
+  },
+  {
+    "id": "b4761a37-bcea-4821-b331-671be5610416",
+    "senderId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "senderName": "Prathmesh Kotwal",
+    "receiverId": "admin",
+    "studentId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "content": "Fees",
+    "timestamp": "2026-03-18T08:45:43.511Z"
+  },
+  {
+    "id": "f73d40f7-235e-4922-8ca7-dd6c1127ffb8",
+    "senderId": "9c5d594d-3509-4996-83bd-b3be83416cff",
+    "senderName": "System Administrator",
+    "receiverId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "studentId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "content": "Ok",
+    "timestamp": "2026-03-18T08:46:24.998Z"
+  },
+  {
+    "id": "88b1a021-93bc-4afb-bba0-194dca0d67ae",
+    "senderId": "9c5d594d-3509-4996-83bd-b3be83416cff",
+    "senderName": "System Administrator",
+    "receiverId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "studentId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "content": "Go first on your dashboard and search for courses and see there fees according to Courses",
+    "timestamp": "2026-03-18T08:47:24.512Z"
+  }
+]

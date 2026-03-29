@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal | CollegeHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="js/theme.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar glass-panel">
+        <div class="sidebar-logo logo">
+            <i class="fas fa-graduation-cap"></i>
+            CollegeHub
+        </div>
+        <nav class="nav-links">
+            <a href="#" class="nav-item active" onclick="showSection('applications')">
+                <i class="fas fa-file-signature"></i> My Applications
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('courses')">
+                <i class="fas fa-graduation-cap"></i> Browse Courses
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('lms-student')">
+                <i class="fas fa-book"></i> Study Center
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('notices-student')">
+                <i class="fas fa-bullhorn"></i> Notice Board
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('helpdesk')">
+                <i class="fas fa-headset"></i> Help Desk
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('profile')">
+                <i class="fas fa-user-circle"></i> My Profile
+            </a>
+        </nav>
+        <div style="margin-top: auto; border-top: 1px solid var(--border-glass); padding-top: 1.5rem;">
+            <button onclick="AuthService.logout()" class="btn btn-danger w-full">
+                <i class="fas fa-power-off"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="dashboard-header reveal">
+            <div>
+                <h1 id="page-title">My Applications</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Student Education Command Center</p>
+            </div>
+            <div class="flex gap-4 items-center">
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <div class="user-profile">
+                    <div class="avatar" id="user-avatar">S</div>
+                    <span id="user-name" style="font-weight: 600;">Student Name</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Applications Section -->
+        <section id="applications-section" class="reveal">
+            <div class="glass-card">
+                <h3 class="p-6 border-b"><i class="fas fa-history text-gradient"></i> Admission Status</h3>
+                <div class="table-container p-6" id="applications-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Program</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applications-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Courses Section -->
+        <section id="courses-section" class="hidden reveal">
+            <div class="feature-grid" id="courses-grid"></div>
+        </section>
+
+        <!-- LMS Student Section -->
+        <section id="lms-student-section" class="hidden reveal">
+            <div class="stats-grid">
+                <div class="glass-card p-6">
+                    <h3><i class="fas fa-cloud-download-alt text-gradient"></i> Study Materials</h3>
+                    <div id="materials-list" class="mt-4 flex flex-col gap-2">
+                        <!-- Dynamic list -->
+                    </div>
+                </div>
+                <div class="glass-card p-6">
+                    <h3><i class="fas fa-file-upload text-gradient"></i> Submit Assignment</h3>
+                    <form id="assignment-form" class="mt-4">
+                        <div class="form-group">
+                            <label class="form-label">Assignment Title</label>
+                            <input type="text" id="assign-title" class="form-input" placeholder="e.g. Unit 1 Quiz" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description (Optional)</label>
+                            <textarea id="assign-desc" class="form-input" rows="2" placeholder="Any notes for the teacher..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">FILE ASSET</label>
+                            <input type="file" id="assign-file" class="form-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full">Upload & Submit</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notice Board Student -->
+        <section id="notices-student-section" class="hidden reveal">
+            <div id="student-notices-container" class="flex flex-col gap-4">
+                <!-- Notifications list -->
+            </div>
+        </section>
+
+        <!-- Help Desk Chat -->
+        <section id="helpdesk-section" class="hidden reveal">
+            <div class="glass-card flex flex-col" style="height: 600px; max-width: 900px; margin: 0 auto; overflow: hidden;">
+                <div class="p-6 border-b flex justify-between items-center bg-surface" style="background: rgba(15, 23, 42, 0.4);">
+                    <div>
+                        <h3 style="font-size: 1.25rem;"><i class="fas fa-headset text-gradient"></i> Student Support</h3>
+                        <p style="font-size: 0.75rem; color: var(--text-muted);">Average response time: < 2 hours</p>
+                    </div>
+                    <span class="badge badge-paid">Online</span>
+                </div>
+                <div id="student-chat-box" class="chat-container flex-1 custom-scroll p-6" style="background: rgba(15, 23, 42, 0.2);">
+                    <!-- Messages will be injected here -->
+                    <div class="flex flex-col items-center justify-center h-full opacity-30">
+                        <i class="fas fa-comments-alt mb-4" style="font-size: 3rem;"></i>
+                        <p>Start a conversation with our support team</p>
+                    </div>
+                </div>
+                <div class="p-6 border-t bg-surface" style="background: rgba(15, 23, 42, 0.4);">
+                    <div class="flex gap-3">
+                        <input type="text" id="student-chat-input" class="form-input" placeholder="Describe your issue or query...">
+                        <button onclick="sendStudentMessage()" class="btn btn-primary" style="padding: 0 1.5rem;">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Student Profile Section -->
+        <section id="profile-section" class="hidden reveal">
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 2rem; align-items: flex-start;">
+                
+                <!-- Edit Profile Form -->
+                <div class="glass-card p-6">
+                    <h3 class="mb-6 border-b border-glass pb-4"><i class="fas fa-user-edit text-gradient mr-2"></i> Edit Personal Details</h3>
+                    <form id="profile-edit-form">
+                        <div class="flex flex-col items-center mb-6">
+                            <div class="relative group cursor-pointer" onclick="document.getElementById('profile-upload').click()">
+                                <div id="profile-edit-avatar-preview" style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: bold; color: white; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+                                    S
+                                </div>
+                                <div class="absolute inset-0 bg-black bg-opacity-60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <i class="fas fa-camera text-white text-xl"></i>
+                                </div>
+                            </div>
+                            <input type="file" id="profile-upload" accept="image/*" class="hidden" onchange="previewProfileImage(event)">
+                            <p class="text-xs text-secondary mt-2">Click to upload Avatar</p>
+                            <input type="hidden" id="profile-b64">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group mb-0">
+                                <label class="text-xs text-secondary mb-1 block uppercase font-bold">Mobile Number</label>
+                                <input type="tel" id="profile-phone" class="form-input" placeholder="+91 9876543210">
+                            </div>
+                            <div class="form-group mb-0">
+                                <label class="text-xs text-secondary mb-1 block uppercase font-bold">Blood Group</label>
+                                <select id="profile-blood" class="form-input">
+                                    <option value="">Select...</option>
+                                    <option value="A+">A+</option><option value="A-">A-</option>
+                                    <option value="B+">B+</option><option value="B-">B-</option>
+                                    <option value="O+">O+</option><option value="O-">O-</option>
+                                    <option value="AB+">AB+</option><option value="AB-">AB-</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-0" style="grid-column: span 2;">
+                                <label class="text-xs text-secondary mb-1 block uppercase font-bold">Residential Address</label>
+                                <textarea id="profile-address" class="form-input" rows="2" placeholder="Full residential addressing for verification"></textarea>
+                            </div>
+                            <div class="form-group mb-0" style="grid-column: span 2;">
+                                <label class="text-xs text-secondary mb-1 block uppercase font-bold">Enrollment Number <span class="text-xs opacity-50">(Auto-generated or request change)</span></label>
+                                <input type="text" id="profile-enroll" class="form-input" placeholder="e.g. ENR54321" readonly style="opacity: 0.7; cursor: not-allowed;">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full mt-6 py-3">Save Changes</button>
+                    </form>
+                </div>
+
+                <!-- Digital ID Card Premium UI -->
+                <div>
+                    <h3 class="mb-4"><i class="fas fa-id-badge text-gradient mr-2"></i> Premium Digital ID</h3>
+                    <div class="id-card-container" id="id-card" style="position: relative; overflow: hidden; max-width: 450px; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);">
+                        <!-- Decorative bg -->
+                        <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: radial-gradient(circle, var(--primary) 0%, transparent 70%); opacity: 0.3; filter: blur(20px);"></div>
+                        <div style="position: absolute; bottom: -50px; left: -50px; width: 200px; height: 200px; background: radial-gradient(circle, var(--secondary) 0%, transparent 70%); opacity: 0.2; filter: blur(30px);"></div>
+                        
+                        <div style="position: relative; z-index: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                                <div>
+                                    <h4 class="text-gradient" style="font-size: 0.8rem; letter-spacing: 2px;">COLLEGEHUB ELITE</h4>
+                                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.2rem;">Official Identity Document</p>
+                                </div>
+                                <i class="fas fa-shield-alt" style="color: var(--warning); font-size: 1.5rem; opacity: 0.8;"></i>
+                            </div>
+
+                            <div style="display: flex; gap: 1.5rem; align-items: stretch;">
+                                <div id="card-avatar-display" style="width: 100px; height: 120px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: 2px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: bold; color: white; overflow: hidden; box-shadow: 0 10px 15px rgba(0,0,0,0.3); flex-shrink: 0;">
+                                    S
+                                </div>
+                                <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                                    <div>
+                                        <p style="font-size: 1.4rem; font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 0.2rem; text-transform: uppercase;" id="id-card-name">Student Name</p>
+                                        <p style="font-size: 0.85rem; color: var(--accent); font-weight: 600;" id="id-card-course">Enrolled User</p>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 1rem;">
+                                        <div>
+                                            <p style="font-size: 0.55rem; color: #94a3b8; letter-spacing: 1px;">ENROLL NO</p>
+                                            <p style="font-size: 0.8rem; color: #e2e8f0; font-family: monospace;" id="id-card-enroll">NOT SET</p>
+                                        </div>
+                                        <div>
+                                            <p style="font-size: 0.55rem; color: #94a3b8; letter-spacing: 1px;">BLOOD GROUP</p>
+                                            <p style="font-size: 0.8rem; color: #ef4444; font-weight: bold;" id="id-card-blood">N/A</p>
+                                        </div>
+                                        <div style="grid-column: span 2;">
+                                            <p style="font-size: 0.55rem; color: #94a3b8; letter-spacing: 1px;">MOBILE</p>
+                                            <p style="font-size: 0.8rem; color: #e2e8f0;" id="id-card-phone">N/A</p>
+                                        </div>
+                                        <div style="grid-column: span 2;">
+                                            <p style="font-size: 0.55rem; color: #94a3b8; letter-spacing: 1px;">ADDRESS</p>
+                                            <p style="font-size: 0.7rem; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="id-card-address">N/A</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 1.5rem; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 1rem; display: flex; justify-content: space-between; align-items: flex-end;">
+                                <div>
+                                    <p style="font-size: 0.6rem; color: #94a3b8; letter-spacing: 0.1em;">VALID UNTIL</p>
+                                    <p style="font-weight: 800; color: #fff; font-size: 0.9rem;">DEC 2028</p>
+                                </div>
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=collegehub_id_verification_secure" alt="QR" style="width: 50px; height: 50px; border-radius: 4px; border: 2px solid white;">
+                            </div>
+                        </div>
+                    </div>
+                    <button id="download-id-btn" class="btn btn-secondary w-full mt-6" onclick="downloadIDCard()" style="max-width: 450px; background: linear-gradient(135deg, var(--bg-surface), rgba(15, 23, 42, 0.8)); border-color: rgba(255,255,255,0.1);">
+                        <i class="fas fa-file-pdf mr-2 text-danger"></i> Download Official PDF
+                    </button>
+                    <p class="text-xs text-secondary mt-3 text-center" style="max-width: 450px;"><i class="fas fa-info-circle"></i> Digital updates reflect instantly on your card.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Modals... Same as before -->
+        <div id="application-modal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px); align-items: center; justify-content: center; z-index: 1000; padding: 1rem;">
+            <div class="glass-card reveal custom-scroll" style="width: 100%; max-width: 650px; padding: 3rem; max-height: 90vh; overflow-y: auto;">
+                <h2 id="apply-course-name" class="mb-6"><i class="fas fa-file-signature text-primary mr-2"></i> Program Application</h2>
+                <form id="application-form">
+                    <input type="hidden" id="apply-course-id">
+                    <input type="hidden" id="apply-course-fee">
+                    
+                    <!-- Advanced Info Fill System -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                        <div class="form-group mb-0">
+                            <label class="text-xs text-secondary mb-2 block uppercase tracking-wider font-bold">Full Legal Name</label>
+                            <input type="text" id="apply-full-name" class="form-input" placeholder="e.g. John Doe" required>
+                        </div>
+                        <div class="form-group mb-0">
+                            <label class="text-xs text-secondary mb-2 block uppercase tracking-wider font-bold">Date of Birth</label>
+                            <input type="date" id="apply-dob" class="form-input" required>
+                        </div>
+                        <div class="form-group mb-0">
+                            <label class="text-xs text-secondary mb-2 block uppercase tracking-wider font-bold">Phone Number</label>
+                            <input type="tel" id="apply-phone" class="form-input" placeholder="+91 9876543210" required>
+                        </div>
+                        <div class="form-group mb-0">
+                            <label class="text-xs text-secondary mb-2 block uppercase tracking-wider font-bold">Previous School</label>
+                            <input type="text" id="apply-prev-school" class="form-input" placeholder="School/College Name" required>
+                        </div>
+                        <div class="form-group mb-0" style="grid-column: span 2;">
+                            <label class="text-xs text-secondary mb-2 block uppercase tracking-wider font-bold">Permanent Address</label>
+                            <textarea id="apply-address" class="form-input" placeholder="Full Address" rows="2" required></textarea>
+                        </div>
+                        <div class="form-group mb-0" style="grid-column: span 2;">
+                            <label class="text-xs text-secondary mb-2 block uppercase tracking-wider font-bold">Previous Academic Marks (%)</label>
+                            <input type="number" id="apply-marks" class="form-input" placeholder="e.g. 90" max="100" min="0" required>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="button" class="btn btn-secondary w-full py-3" onclick="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary w-full py-3 text-lg relative overflow-hidden group">
+                            <span class="relative z-10 flex items-center justify-center gap-2">Proceed to Payment <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="payment-modal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px); align-items: center; justify-content: center; z-index: 1000; padding: 1rem;">
+            <div class="glass-card reveal" style="width: 100%; max-width: 800px; padding: 2.5rem; display: flex; gap: 3rem; background: #ffffff; color: #111; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+                
+                <!-- Left Side: Item & QR -->
+                <div style="flex: 1; border-right: 1px solid #e2e8f0; padding-right: 2rem; display: flex; flex-direction: column;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 2rem; color: #334155; font-weight: 700; text-transform: uppercase;">Checkout</h3>
+                    
+                    <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 2rem;">
+                         <div style="width: 70px; height: 90px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #94a3b8; border: 1px solid #e2e8f0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                            <i class="fas fa-book-reader text-primary opacity-60"></i>
+                         </div>
+                         <div style="flex: 1;">
+                             <p style="font-weight: 800; font-size: 1rem; margin: 0 0 0.3rem 0; color: #1e293b; text-transform: uppercase; letter-spacing: 0.5px;" id="payment-course-name">Course</p>
+                             <p style="color: #64748b; font-size: 0.8rem; margin: 0; font-weight: 500;">Academic Year 2026</p>
+                             <div style="margin-top: 1rem; font-weight: 800; font-size: 1.1rem; color: #0f172a;">₹<span id="payment-tuition-fee">0</span></div>
+                         </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: auto; padding: 1.5rem; border: 2px dashed #cbd5e1; border-radius: 12px; background: #f8fafc;">
+                        <p style="font-size: 0.75rem; color: #475569; margin-bottom: 1rem; font-weight: 800; letter-spacing: 1.5px;">SECURE UPI PAYMENT</p>
+                        <div style="background: #ffffff; padding: 1rem; border-radius: 16px; box-shadow: 0 15px 30px rgba(0,0,0,0.08); display: inline-block; border: 1px solid #e2e8f0; margin-bottom: 0.8rem;">
+                            <img src="img/payment-qr.png" alt="Payment QR Code" style="width: 150px; height: 150px; display: block; object-fit: contain;">
+                        </div>
+                        <p style="font-size: 0.65rem; color: #64748b; margin-top: 0.5rem; font-weight: 600;">Scan with GPay, PhonePe, or Paytm</p>
+                    </div>
+                </div>
+
+                <!-- Right Side: Summary & Buttons -->
+                <div style="flex: 1; display: flex; flex-direction: column;">
+                    <div style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.95rem; font-weight: 600;">
+                            <span style="color: #475569; text-transform: uppercase; letter-spacing: 1px;">Subtotal</span>
+                            <span style="color: #1e293b;">₹<span id="payment-subtotal">0</span></span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.95rem; font-weight: 600;">
+                            <span style="color: #475569; text-transform: uppercase; letter-spacing: 1px;">Admin / Tax</span>
+                            <span style="color: #1e293b;">₹<span id="payment-tax">500</span></span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 1.3rem; margin-top: 1.5rem;">
+                            <span style="color: #0f172a; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">Total</span>
+                            <span style="font-weight: 800; color: #0f172a;">₹<span id="payment-total">0</span></span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                        <button type="button" onclick="submitPayment()" style="background: #111111; color: white; padding: 0.9rem; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 1rem; transition: background 0.2s;">
+                            Buy with <svg style="height: 18px; margin-left: 4px; fill: white;" viewBox="0 0 60 25" xmlns="http://www.w3.org/2000/svg"><path d="M10.8 11.4v4.5h12.5c-.5 2.6-3.1 7.6-12.5 7.6-7.5 0-13.6-6.2-13.6-13.8S3.3 5.9 10.8 5.9c4.2 0 7 1.8 8.6 3.3l5.8-5.6C21.4.1 16.6-2 10.8-2 3.1-2-3 4-3 11.7s6.1 13.7 13.8 13.7c7.9 0 13.2-5.6 13.2-13.4 0-.9-.1-1.8-.3-2.6H10.8z"/><path d="M57 9.8h-4.3V5.5h-4.2v4.3h-4.3v4.2h4.3v4.3h4.2v-4.3H57V9.8z"/><path d="M37.6 9.8c-4.4 0-7.9 3.3-7.9 7.7s3.5 7.7 7.9 7.7c4.4 0 7.9-3.4 7.9-7.7s-3.5-7.7-7.9-7.7zm0 12.3c-2.4 0-4.3-1.9-4.3-4.6s1.9-4.6 4.3-4.6c2.4 0 4.3 1.9 4.3 4.6s-1.9 4.6-4.3 4.6z"/></svg> Pay
+                        </button>
+                        <button type="button" onclick="submitPayment()" style="background: #ffc439; color: #003087; padding: 0.9rem; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 1.1rem; font-style: italic; transition: opacity 0.2s;">
+                            <i class="fab fa-paypal"></i> PayPal
+                        </button>
+                        <button type="button" onclick="submitPayment()" style="background: #1e293b; color: white; padding: 0.9rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.95rem; transition: background 0.2s;">
+                            <i class="far fa-credit-card mr-1"></i> Debit or Credit Card
+                        </button>
+                        
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <button type="button" onclick="closePaymentModal()" class="text-secondary" style="background: transparent; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; text-decoration: underline;">Cancel Transaction</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- Crop Modal -->
+        <div id="crop-modal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px); align-items: center; justify-content: center; z-index: 2000; padding: 1rem;">
+            <div class="glass-card" style="width: 100%; max-width: 500px; padding: 2rem;">
+                <h3 class="mb-4">Crop Profile Avatar</h3>
+                <div style="width: 100%; max-height: 400px; background: #000; margin-bottom: 2rem; overflow: hidden; display: flex; justify-content: center;">
+                    <img id="crop-image-target" style="max-width: 100%; display: block;">
+                </div>
+                <div class="flex gap-4">
+                    <button type="button" class="btn btn-secondary w-full" onclick="document.getElementById('crop-modal').style.display='none'">Cancel</button>
+                    <button type="button" class="btn btn-primary w-full" onclick="applyCrop()">Apply Crop</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="js/api.js?v=2"></script>
+    <script>
+        const socket = io();
+        if (!AuthService.isAuthenticated()) window.location.href = 'login.html';
+        const user = AuthService.getCurrentUser();
+        
+        document.getElementById('user-name').textContent = user.name;
+        document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+
+
+        const sections = {
+            applications: document.getElementById('applications-section'),
+            courses: document.getElementById('courses-section'),
+            'lms-student': document.getElementById('lms-student-section'),
+            'notices-student': document.getElementById('notices-student-section'),
+            helpdesk: document.getElementById('helpdesk-section'),
+            profile: document.getElementById('profile-section')
+        };
+
+        function showSection(name) {
+            Object.values(sections).forEach(el => el.classList.add('hidden'));
+            sections[name].classList.remove('hidden');
+            document.getElementById('page-title').textContent = name.toUpperCase().replace('-', ' ');
+            
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active');
+                if(el.getAttribute('onclick').includes(name)) el.classList.add('active');
+            });
+
+            if (name === 'courses') loadCourses();
+            if (name === 'applications') loadApplications();
+            if (name === 'lms-student') loadLMS();
+            if (name === 'notices-student') loadNotices();
+            if (name === 'helpdesk') loadChat();
+            if (name === 'profile') loadProfile();
+        }
+
+        async function loadProfile() {
+            try {
+                const profile = await Api.get('/users/me');
+                
+                // Form Fields
+                document.getElementById('profile-phone').value = profile.phone || '';
+                document.getElementById('profile-blood').value = profile.bloodGroup || '';
+                document.getElementById('profile-address').value = profile.address || '';
+                document.getElementById('profile-enroll').value = profile.enrollNumber || 'Not Generated';
+                
+                // Set Images
+                const initial = profile.name.charAt(0).toUpperCase();
+                const avatarView = document.getElementById('profile-edit-avatar-preview');
+                const cardView = document.getElementById('card-avatar-display');
+                
+                if (profile.avatar) {
+                    avatarView.innerHTML = `<img src="${profile.avatar}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                    cardView.innerHTML = `<img src="${profile.avatar}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                    document.getElementById('user-avatar').innerHTML = `<img src="${profile.avatar}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                } else {
+                    avatarView.innerHTML = initial;
+                    cardView.innerHTML = initial;
+                }
+                document.getElementById('profile-b64').value = profile.avatar || '';
+
+                // Digital Card Fields
+                document.getElementById('id-card-name').textContent = profile.name;
+                document.getElementById('id-card-enroll').textContent = profile.enrollNumber || 'PENDING';
+                document.getElementById('id-card-blood').textContent = profile.bloodGroup || 'N/A';
+                document.getElementById('id-card-phone').textContent = profile.phone || 'N/A';
+                document.getElementById('id-card-address').textContent = profile.address || 'N/A';
+                
+            } catch (error) {
+                console.error("Error loading profile", error);
+            }
+        }
+
+        function downloadIDCard() {
+            const btn = document.getElementById('download-id-btn');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating High-Res PDF...';
+            const element = document.getElementById('id-card');
+            
+            // Get exact dimensions of the card to prevent any clipping or pagination
+            const w = element.offsetWidth;
+            const h = element.offsetHeight;
+            
+            // html2pdf Options for High Quality Generation
+            const opt = {
+                margin:       0,
+                filename:     `CollegeHub_ID_${document.getElementById('id-card-name').textContent.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 3, useCORS: true, letterRendering: true }, 
+                jsPDF:        { unit: 'px', format: [w, h], orientation: w > h ? 'landscape' : 'portrait' } 
+            };
+
+            // Temporarily tweak styles for perfect capture
+            const originalBoxShadow = element.style.boxShadow;
+            element.style.boxShadow = 'none'; // removing outer shadow for cleaner edge in PDF
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.style.boxShadow = originalBoxShadow;
+                btn.innerHTML = originalContent;
+            }).catch(err => {
+                console.error('PDF Generation Error:', err);
+                alert('Failed to generate PDF.');
+                btn.innerHTML = originalContent;
+            });
+        }
+
+        let cropperInstance = null;
+
+        function previewProfileImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const b64 = e.target.result;
+                const cropModal = document.getElementById('crop-modal');
+                const imageTarget = document.getElementById('crop-image-target');
+                
+                imageTarget.src = b64;
+                cropModal.style.display = 'flex';
+                
+                if (cropperInstance) cropperInstance.destroy();
+                cropperInstance = new Cropper(imageTarget, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    background: false
+                });
+            };
+            reader.readAsDataURL(file);
+            event.target.value = ''; // Reset input to allow re-uploading the same image
+        }
+
+        function applyCrop() {
+            if (!cropperInstance) return;
+            const canvas = cropperInstance.getCroppedCanvas({ width: 300, height: 300 });
+            const croppedB64 = canvas.toDataURL('image/jpeg');
+            
+            document.getElementById('profile-edit-avatar-preview').innerHTML = `<img src="${croppedB64}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            document.getElementById('card-avatar-display').innerHTML = `<img src="${croppedB64}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            document.getElementById('profile-b64').value = croppedB64;
+            
+            document.getElementById('crop-modal').style.display = 'none';
+        }
+
+        document.getElementById('profile-edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            
+            try {
+                await Api.put('/users/profile', {
+                    phone: document.getElementById('profile-phone').value,
+                    bloodGroup: document.getElementById('profile-blood').value,
+                    address: document.getElementById('profile-address').value,
+                    avatar: document.getElementById('profile-b64').value
+                });
+                alert('Profile updated successfully!');
+                loadProfile();
+            } catch (err) {
+                alert('Failed to update profile.');
+            } finally {
+                btn.innerHTML = 'Save Changes';
+            }
+        });
+
+
+        async function loadApplications() {
+            const apps = await Api.get('/admissions/my');
+            const tbody = document.getElementById('applications-table-body');
+            tbody.innerHTML = apps.map(app => `
+                <tr>
+                    <td style="font-weight: 600;">${app.courseName}</td>
+                    <td>${new Date(app.appliedAt).toLocaleDateString()}</td>
+                    <td><span class="badge badge-${app.status.toLowerCase()}">${app.status}</span></td>
+                    <td>
+                        ${(app.status === 'Approved' || app.status === 'Pending') ? `<button class="btn btn-primary btn-sm" onclick="payFee('${app.id}', ${app.courseFee || 0}, '${app.courseName}')">Pay Fee</button>` : '-'}
+                    </td>
+                </tr>
+            `).join('');
+            if (apps[0]) document.getElementById('id-card-course').textContent = apps[0].courseName;
+        }
+
+        async function loadCourses() {
+            const courses = await Api.get('/courses');
+            document.getElementById('courses-grid').innerHTML = courses.map(c => `
+                <div class="glass-card feature-card">
+                    <h3 class="mb-2">${c.name}</h3>
+                    <p class="mb-4">${c.description}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-success font-bold">₹${parseInt(c.fee).toLocaleString()}</span>
+                        <button class="btn btn-primary" onclick="openApplyModal('${c.id}', '${c.name}', ${c.fee})">Apply</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Notices Real-time
+        async function loadNotices() {
+            const list = await Api.get('/notices');
+            const container = document.getElementById('student-notices-container');
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div class="glass-card" style="padding: 4rem; text-align: center; border: 1px dashed var(--border-glass); background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; opacity: 0.6; margin: 2rem auto; max-width: 600px; width: 100%;">
+                        <i class="fas fa-bell-slash text-gradient" style="font-size: 3rem; opacity: 0.7;"></i>
+                        <p style="margin: 0; font-size: 1.1rem; color: var(--text-main); font-weight: 500;">No announcements at this time</p>
+                    </div>`;
+                return;
+            }
+            container.innerHTML = list.map(n => `
+                <div class="glass-card notice-card notice-${n.type}">
+                    <div class="flex justify-between items-start">
+                        <h4 class="font-bold" style="font-size: 1.1rem;">${n.title}</h4>
+                        <span class="badge badge-pending" style="font-size: 0.65rem; padding: 0.2rem 0.6rem;">
+                            <i class="fas fa-calendar-alt mr-1"></i> ${new Date(n.date).toLocaleDateString()}
+                        </span>
+                    </div>
+                    <p class="mt-4 text-secondary" style="line-height: 1.6;">${n.content}</p>
+                </div>
+            `).join('');
+        }
+
+        socket.on('new-notice', (n) => {
+            if(!sections['notices-student'].classList.contains('hidden')) loadNotices();
+            alert(`📢 New Announcement: ${n.title}`);
+        });
+
+        socket.on('notice-deleted', () => {
+            if(!sections['notices-student'].classList.contains('hidden')) loadNotices();
+        });
+
+        socket.on('all-notices-cleared', () => {
+            if(!sections['notices-student'].classList.contains('hidden')) loadNotices();
+        });
+
+        // LMS Logic
+        async function loadLMS() {
+            const list = await Api.get('/materials');
+            document.getElementById('materials-list').innerHTML = list.map(m => `
+                <div class="material-item">
+                    <div>
+                        <p class="font-bold" style="font-size: 1rem;">${m.title}</p>
+                        <p style="font-size: 0.75rem; color: var(--text-muted);">
+                            <i class="fas fa-calendar-alt mr-1"></i> Uploaded: ${new Date(m.date).toLocaleDateString()}
+                        </p>
+                    </div>
+                    <a href="${m.fileUrl}" download="${m.title}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-cloud-download-alt"></i> Access
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('assignment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+                
+                const formData = new FormData();
+                formData.append('title', document.getElementById('assign-title').value);
+                formData.append('description', document.getElementById('assign-desc').value);
+                formData.append('file', document.getElementById('assign-file').files[0]);
+                
+                await Api.post('/assignments', formData);
+                
+                alert('Assignment Submitted Successfully!');
+                e.target.reset();
+            } catch (error) {
+                console.error('Submission error:', error);
+                alert('Failed to submit assignment: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+
+        // Chat Logic
+        async function loadChat() {
+            const msgs = await Api.get('/messages');
+            renderMessages(msgs);
+        }
+
+        setInterval(() => {
+            if (!sections['helpdesk'].classList.contains('hidden')) loadChat();
+        }, 5000);
+
+        function renderMessages(msgs) {
+            const box = document.getElementById('student-chat-box');
+            if (!msgs || msgs.length === 0) {
+                box.innerHTML = `<div class="flex flex-col items-center justify-center h-full opacity-30"><i class="fas fa-comments-alt mb-4" style="font-size: 3rem;"></i><p>No messages yet</p></div>`;
+                return;
+            }
+            const user = AuthService.getCurrentUser();
+            box.innerHTML = msgs.map(m => `
+                <div class="message ${m.senderId === user.id ? 'message-sent' : 'message-received'}">
+                    <div style="font-size: 0.65rem; opacity: 0.6; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 5px;">
+                        ${m.senderId === user.id ? 'You' : (m.senderId === 'ai-bot' ? '<i class="fas fa-robot"></i> CollegeHub Bot' : 'Academic Support')}
+                        ${m.senderId === 'ai-bot' ? '<span class="badge badge-paid" style="font-size: 0.5rem; padding: 0.1rem 0.3rem;">AI BOT</span>' : ''}
+                    </div>
+                    ${m.content}
+                </div>
+            `).join('');
+            box.scrollTop = box.scrollHeight;
+        }
+
+        async function sendStudentMessage() {
+            const input = document.getElementById('student-chat-input');
+            if(!input.value) return;
+            await Api.post('/messages', { content: input.value });
+            input.value = '';
+            loadChat();
+        }
+
+        socket.on('new-message', () => {
+             loadChat();
+        });
+
+        // Payment Logic
+        async function submitPayment() {
+            const btn = document.getElementById('payment-modal').querySelector('button[onclick="submitPayment()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+            try {
+                // 1. Get total amount
+                const amount = parseInt(document.getElementById('payment-total').textContent.replace(/,/g, ''));
+
+                // 2. Fetch Razorpay config
+                const configRes = await Api.get('/payment/config');
+
+                // 3. Create order on backend
+                const order = await Api.post('/payment/create-order', { 
+                    amount: amount, 
+                    admissionId: currentPaymentAppId 
+                });
+
+                // 4. Open Razorpay Checkout
+                const options = {
+                    key: configRes.key,
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: "CollegeHub",
+                    description: document.getElementById('payment-course-name').textContent || "Academic Fee Payment",
+                    order_id: order.id,
+                    handler: async function (response) {
+                        try {
+                            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Verifying...';
+                            await Api.post('/payment/verify', {
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature,
+                                admissionId: currentPaymentAppId,
+                                amount: amount
+                            });
+                            alert('Payment Successful!');
+                            closePaymentModal();
+                            loadApplications();
+                            loadNotices();
+                        } catch (err) {
+                            alert('Payment Verification Failed: ' + err.message);
+                            btn.innerHTML = originalText;
+                        }
+                    },
+                    prefill: {
+                        name: user.name,
+                        email: user.email || "",
+                        contact: user.phone || ""
+                    },
+                    theme: {
+                        color: "#0f172a"
+                    }
+                };
+
+                const rzp = new window.Razorpay(options);
+                rzp.on('payment.failed', function (response){
+                    alert("Payment Failed: " + response.error.description);
+                    btn.innerHTML = originalText;
+                });
+                rzp.open();
+
+            } catch (err) {
+                alert('Initialization Error: ' + err.message);
+                btn.innerHTML = originalText;
+            }
+        }
+
+        function openApplyModal(id, name, fee) {
+            document.getElementById('apply-course-id').value = id;
+            document.getElementById('apply-course-name').innerHTML = `<i class="fas fa-file-signature text-primary mr-2"></i> ${name}`;
+            document.getElementById('apply-course-fee').value = fee;
+            
+            // Auto-fill some details for the user
+            document.getElementById('apply-full-name').value = user.name;
+            document.getElementById('application-modal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('application-modal').style.display = 'none'; }
+        
+        let currentPaymentAppId = null;
+        function payFee(id, amount, courseName = "Course Fee") {
+            currentPaymentAppId = id;
+            const tax = 500;
+            const tuition = parseInt(amount) || 0;
+            const total = tuition + tax;
+            
+            document.getElementById('payment-course-name').textContent = courseName;
+            document.getElementById('payment-tuition-fee').textContent = tuition.toLocaleString();
+            document.getElementById('payment-subtotal').textContent = tuition.toLocaleString();
+            document.getElementById('payment-tax').textContent = tax.toLocaleString();
+            document.getElementById('payment-total').textContent = total.toLocaleString();
+            
+            document.getElementById('payment-modal').style.display = 'flex';
+        }
+        function closePaymentModal() { document.getElementById('payment-modal').style.display = 'none'; }
+
+        document.getElementById('application-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="relative z-10 flex items-center justify-center gap-2"><i class="fas fa-spinner fa-spin"></i> Checking Verification...</span>';
+            
+            try {
+                const response = await Api.post('/admissions', {
+                    courseId: document.getElementById('apply-course-id').value,
+                    personalDetails: {
+                        fullName: document.getElementById('apply-full-name').value,
+                        dob: document.getElementById('apply-dob').value,
+                        phone: document.getElementById('apply-phone').value,
+                        address: document.getElementById('apply-address').value,
+                        prevSchool: document.getElementById('apply-prev-school').value,
+                        marks: document.getElementById('apply-marks').value
+                    }
+                });
+                
+                // Immediately transition to Payment Details
+                closeModal();
+                const newAppId = response.application.id;
+                const feeStr = document.getElementById('apply-course-fee').value;
+                const courseName = document.getElementById('apply-course-name').textContent.trim();
+                
+                payFee(newAppId, feeStr, courseName);
+                submitBtn.innerHTML = originalText;
+                
+            } catch (error) {
+                alert('Application error: ' + error.message);
+                submitBtn.innerHTML = originalText;
+            }
+        });
+
+        // Init
+        showSection('applications');
+    </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+[
+  {
+    "id": "5c9d3410-2b29-4e73-9a8d-c8b99cf2f22c",
+    "studentId": "00f3cf24-7964-4ff3-b2cd-f59bae5d84cb",
+    "studentName": "Arshad Yelikar",
+    "courseId": "b1d1793b-9829-4ed0-8d4a-713e1f11c657",
+    "courseName": "Information Teachnology",
+    "personalDetails": {
+      "fullName": "Arshad Yelikar",
+      "prevSchool": "GRM Junior Science College, Latur.",
+      "marks": "90"
+    },
+    "status": "Paid",
+    "appliedAt": "2026-03-11T17:13:10.274Z",
+    "paymentId": "pay_mock_29522440"
+  },
+  {
+    "id": "65f1b472-f89e-46a4-98fa-50e775f174e9",
+    "studentId": "6a45e0b8-0fe4-4876-9037-5cbc29b8f232",
+    "studentName": "Prathmesh Kotwal",
+    "courseId": "c1",
+    "courseName": "Computer Science Engineering",
+    "personalDetails": {
+      "fullName": "Prathmesh Kotwal",
+      "prevSchool": "VIET, Almala.",
+      "marks": "90"
+    },
+    "status": "Paid",
+    "appliedAt": "2026-03-11T17:21:09.150Z",
+    "paymentId": "pay_mock_d859b7fa"
+  },
+  {
+    "id": "928aebc1-fbea-4ee4-8164-76410b84818d",
+    "studentId": "1d17c158-ba65-48d1-89b4-055458c46ff4",
+    "studentName": "Shrinivas Bellale",
+    "courseId": "c3",
+    "courseName": "Business Administration",
+    "personalDetails": {
+      "prevSchool": "VIET, Almala.",
+      "marks": "60"
+    },
+    "status": "Paid",
+    "appliedAt": "2026-03-15T04:04:55.434Z",
+    "paymentId": "pay_mock_54cb0c9f"
+  },
+  {
+    "id": "37ff2425-c2c0-488c-b12e-7d32682bf69f",
+    "studentId": "1d848fee-e19a-4514-8d26-d86e8c92a1d7",
+    "studentName": "Yash Kamble",
+    "courseId": "c2",
+    "courseName": "Mechanical Engineering",
+    "personalDetails": {
+      "fullName": "Yash Kamble",
+      "dob": "2005-12-15",
+      "phone": "+91 1234567890",
+      "address": "Hadko Colony, Latur.",
+      "prevSchool": "VIET, Almala.",
+      "marks": "55"
+    },
+    "status": "Approved",
+    "appliedAt": "2026-03-15T06:15:36.254Z"
+  },
+  {
+    "id": "0bbde403-08b0-49f4-9dbd-fa82a0fe86ba",
+    "studentId": "0bff77f0-782d-411d-ac91-dcfb48189102",
+    "studentName": "Yash Patil",
+    "courseId": "b1d1793b-9829-4ed0-8d4a-713e1f11c657",
+    "courseName": "Information Teachnology",
+    "personalDetails": {
+      "fullName": "Yash Patil",
+      "dob": "2000-01-01",
+      "phone": "+91 1234567891",
+      "address": "Almala, Ausa",
+      "prevSchool": "VIET, Almala.",
+      "marks": "100"
+    },
+    "status": "Pending",
+    "appliedAt": "2026-03-16T05:58:53.034Z"
+  },
+  {
+    "id": "87a5003d-fc6b-4cf2-a12b-0abec61bfb39",
+    "studentId": "b360aabf-e3fe-4c76-961e-569f20d7a3d5",
+    "studentName": "Zaid Khan",
+    "courseId": "b1d1793b-9829-4ed0-8d4a-713e1f11c657",
+    "courseName": "Information Teachnology",
+    "personalDetails": {
+      "fullName": "Zaid Khan",
+      "dob": "2001-02-01",
+      "phone": "+91 12345678365",
+      "address": "Almala, Ausa.",
+      "prevSchool": "VIET, Almala.",
+      "marks": "95"
+    },
+    "status": "Pending",
+    "appliedAt": "2026-03-18T08:15:13.982Z"
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "c1",
+    "name": "Computer Science Engineering",
+    "code": "CSE",
+    "description": "Four year undergraduate program in Computer Science.",
+    "duration": "4 Years",
+    "fee": 50000
+  },
+  {
+    "id": "c2",
+    "name": "Mechanical Engineering",
+    "code": "ME",
+    "description": "Classic engineering discipline focusing on mechanics.",
+    "duration": "4 Years",
+    "fee": 45000
+  },
+  {
+    "id": "c3",
+    "name": "Business Administration",
+    "code": "BBA",
+    "description": "Bachelor of Business Administration.",
+    "duration": "3 Years",
+    "fee": 30000
+  },
+  {
+    "id": "b1d1793b-9829-4ed0-8d4a-713e1f11c657",
+    "name": "Information Teachnology",
+    "code": "IT",
+    "description": "Diploma in Information Teachnology",
+    "duration": "3 Years",
+    "fee": 55000
+  }
+]
