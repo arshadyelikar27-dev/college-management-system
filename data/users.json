@@ -40,5 +40,21 @@
     "password": "$2a$10$n2TJlrNCHWkcvkIyfT8fXuA4zD9dXsnhQrKAngkMVXjEgsLql4QB6",
     "role": "student",
     "createdAt": "2026-03-15T04:03:51.554Z"
+  },
+  {
+    "id": "57ce8f01-7166-4da8-bae1-3b5bf937c20c",
+    "name": "Test User",
+    "email": "tester123@gmail.com",
+    "password": "$2a$10$H.J1fj7PQceW5PklPAoGw.h8yXC63vdfoPihVYRmo0.lgvF/vfTa.",
+    "role": "student",
+    "createdAt": "2026-03-29T14:01:15.770Z"
+  },
+  {
+    "id": "3769d74d-8ea2-4ab6-9fea-9eedcc5912ae",
+    "name": "Tester",
+    "email": "user123@college.com",
+    "password": "$2a$10$GzT9Xi6WqYXOGx58zCV2X.LOiBi3GVn32CAhNgBJkzCwoUXCM07uO",
+    "role": "student",
+    "createdAt": "2026-03-29T14:02:39.903Z"
   }
 ]

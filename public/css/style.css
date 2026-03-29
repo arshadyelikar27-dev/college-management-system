@@ -849,6 +849,29 @@ select.form-input option {
 @media (max-width: 768px) {
     .menu-toggle { display: block !important; }
     
+    /* Utility classes for responsive grid replacing inline styles */
+    .grid-admin-notice { grid-template-columns: 1fr !important; }
+    .grid-admin-chat { grid-template-columns: 1fr !important; }
+    .grid-student-profile { grid-template-columns: 1fr !important; }
+    .grid-apply-form { grid-template-columns: 1fr !important; }
+
+    [style*="gap: 3rem"] {
+        gap: 1.5rem !important;
+        flex-direction: column !important;
+    }
+
+    /* Checkout inline fixes */
+    #payment-modal .glass-card {
+        flex-direction: column !important;
+        gap: 1.5rem !important;
+        padding: 1.5rem !important;
+    }
+    
+    #payment-modal > div > div {
+        border-right: none !important;
+        padding-right: 0 !important;
+    }
+    
     .main-content {
         padding: 1.5rem;
         margin-left: 0; /* Sidebar might be hidden or toggled on mobile */
@@ -914,4 +937,24 @@ select.form-input option {
     .login-card, .register-card {
         padding: 2rem 1.5rem;   
     }
+
+    /* Analytics card home page fix */
+    .analytics-card {
+        flex-direction: column;
+        height: auto !important;
+        padding: 2rem !important;
+        text-align: center;
+    }
+    .analytics-card > div:last-child {
+        margin-left: 0 !important;
+        border-left: none !important;
+        padding-left: 0 !important;
+        border-top: 2px solid var(--border-glass);
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+    .flex-wrap-mobile {
+        flex-wrap: wrap;
+    }
 }
+.flex-wrap { flex-wrap: wrap; }
