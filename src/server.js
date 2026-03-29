@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -42,19 +43,27 @@ app.use('/uploads', express.static(path.join(__dirname, '../public/uploads'), {
 
 // Seed Admin User
 const seedAdmin = async () => {
+    const adminEmail = process.env.ADMIN_EMAIL || 'arshadyelikar5@gmail.com';
+    const adminPass = process.env.ADMIN_PASS || 'Arshu@27';
+
     const existingAdmin = db.findOne('users', u => u.role === 'admin');
     if (!existingAdmin) {
-        const hashedPassword = await bcrypt.hash('admin123', 10);
+        const hashedPassword = await bcrypt.hash(adminPass, 10);
         const adminUser = {
             id: uuidv4(),
             name: 'System Administrator',
-            email: 'admin@college.com',
+            email: adminEmail,
             password: hashedPassword,
             role: 'admin',
             createdAt: new Date().toISOString()
         };
         db.create('users', adminUser);
-        console.log('Admin user seeded: admin@college.com / admin123');
+        console.log(`Admin user seeded: ${adminEmail}`);
+    } else if (existingAdmin.email !== adminEmail) {
+        // Update admin info if it changed in env
+        const hashedPassword = await bcrypt.hash(adminPass, 10);
+        db.update('users', existingAdmin.id, { email: adminEmail, password: hashedPassword });
+        console.log(`Admin user updated to: ${adminEmail}`);
     }
 };
 seedAdmin();

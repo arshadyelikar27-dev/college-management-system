@@ -66,7 +66,11 @@
                 <label class="form-label" for="password">Password</label>
                 <div style="position: relative;">
                     <i class="fas fa-lock" style="position: absolute; left: 1rem; top: 1rem; color: var(--text-muted);"></i>
-                    <input type="password" id="password" class="form-input" required placeholder="••••••••" style="padding-left: 3rem;">
+                    <input type="password" id="password" class="form-input" required placeholder="••••••••" style="padding-left: 3rem; padding-right: 3rem;">
+                    <i class="fas fa-eye" id="togglePassword" style="position: absolute; right: 1rem; top: 1rem; color: var(--text-muted); cursor: pointer;" onclick="togglePasswordVisibility('password', 'togglePassword')"></i>
+                </div>
+                <div style="text-align: right; margin-top: 0.5rem;">
+                    <a href="forgot-password.html" class="text-gradient" style="font-size: 0.85rem; font-weight: 600;">Forgot Password?</a>
                 </div>
             </div>
 
@@ -84,6 +88,20 @@
 
     <script src="js/api.js"></script>
     <script>
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
         const loginForm = document.getElementById('loginForm');
         const errorMessage = document.getElementById('error-message');
         const submitBtn = document.getElementById('submitBtn');

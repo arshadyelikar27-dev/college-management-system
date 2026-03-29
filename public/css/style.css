@@ -883,10 +883,27 @@ select.form-input option {
     }
 }
 
-/* Fix for background overflow */
 #dashboard-section, #admissions-section, #courses-section, #students-section, 
 #lms-admin-section, #notices-admin-section, #messages-admin-section,
 #applications-section, #lms-student-section, #notices-student-section,
 #helpdesk-section, #profile-section {
     width: 100%;
+}
+
+@media (max-width: 576px) {
+    .glass-card { 
+        padding: 1.5rem; 
+    }
+    .hero-title { 
+        font-size: 2.2rem; 
+    }
+    .table-container { 
+        padding: 0.5rem !important; 
+    }
+    body {
+        padding: 1rem;
+    }
+    .login-card, .register-card {
+        padding: 2rem 1.5rem;   
+    }
 }

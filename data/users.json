@@ -2,8 +2,8 @@
   {
     "id": "9c5d594d-3509-4996-83bd-b3be83416cff",
     "name": "System Administrator",
-    "email": "admin@college.com",
-    "password": "$2a$10$N0./EoUAgZ1JIefISJ0RuuUjnHzXBR6HL/iX0H7e2kqXl.rOHRQ4a",
+    "email": "arshadyelikar5@gmail.com",
+    "password": "$2a$10$kh0CjE3o7i1XEIm2Qbpbw.cUNaUuLOxjI5FHbhiLlHQ4RaH2u4Fpi",
     "role": "admin",
     "createdAt": "2026-02-05T06:02:41.858Z"
   },
@@ -40,29 +40,5 @@
     "password": "$2a$10$n2TJlrNCHWkcvkIyfT8fXuA4zD9dXsnhQrKAngkMVXjEgsLql4QB6",
     "role": "student",
     "createdAt": "2026-03-15T04:03:51.554Z"
-  },
-  {
-    "id": "1d848fee-e19a-4514-8d26-d86e8c92a1d7",
-    "name": "Yash Kamble",
-    "email": "yash@gmail.com",
-    "password": "$2a$10$S2VGmyxrDehbV0X6NIvEBuKlcIJlrmaIim2EaEjTDiGJOUpv7sVNC",
-    "role": "student",
-    "createdAt": "2026-03-15T06:11:14.653Z"
-  },
-  {
-    "id": "0bff77f0-782d-411d-ac91-dcfb48189102",
-    "name": "Yash Patil",
-    "email": "yashpatil@gmail.com",
-    "password": "$2a$10$l/DWuYSP08oxOmQxf8ZVBuDoY5wHqOfWAsyLs1RnFTDb90yAXZawa",
-    "role": "student",
-    "createdAt": "2026-03-16T05:57:28.014Z"
-  },
-  {
-    "id": "b360aabf-e3fe-4c76-961e-569f20d7a3d5",
-    "name": "Zaid Khan",
-    "email": "zaid@gmail.com",
-    "password": "$2a$10$si9oHW63Pw0DxTe3culSPuJvq3XdBS5evuLkrmw9bYMzKupPXmvSO",
-    "role": "student",
-    "createdAt": "2026-03-18T08:13:45.177Z"
   }
 ]

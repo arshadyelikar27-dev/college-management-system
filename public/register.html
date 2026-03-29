@@ -65,7 +65,8 @@
                 <label class="form-label" for="password">Choose Password</label>
                 <div style="position: relative;">
                     <i class="fas fa-lock" style="position: absolute; left: 1rem; top: 1rem; color: var(--text-muted);"></i>
-                    <input type="password" id="password" class="form-input" required placeholder="••••••••" style="padding-left: 3rem;">
+                    <input type="password" id="password" class="form-input" required placeholder="••••••••" style="padding-left: 3rem; padding-right: 3rem;">
+                    <i class="fas fa-eye" id="togglePasswordRegister" style="position: absolute; right: 1rem; top: 1rem; color: var(--text-muted); cursor: pointer;" onclick="togglePasswordVisibility('password', 'togglePasswordRegister')"></i>
                 </div>
             </div>
 
@@ -84,6 +85,20 @@
 
     <script src="js/api.js"></script>
     <script>
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
         const registerForm = document.getElementById('registerForm');
         const errorMessage = document.getElementById('error-message');
         const successMessage = document.getElementById('success-message');

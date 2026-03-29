@@ -106,6 +106,7 @@
                                 <th>Student</th>
                                 <th>Requested Course</th>
                                 <th>Score</th>
+                                <th>Fee</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -349,19 +350,30 @@
         async function loadAdmissions() {
             const list = await Api.get('/admissions/all');
             const tbody = document.getElementById('admissions-table');
-            tbody.innerHTML = list.map(app => `
+            tbody.innerHTML = list.map(app => {
+                const isPaid = !!app.paymentId || app.status === 'Paid';
+                const feeBadge = isPaid ? '<span class="badge badge-paid"><i class="fas fa-check-circle"></i> Paid</span>' : '<span class="badge badge-warning"><i class="fas fa-clock"></i> Unpaid</span>';
+                
+                let admStatusDisplay = app.status;
+                if (admStatusDisplay === 'Paid') admStatusDisplay = 'Pending';
+                
+                const statusBadge = `<span class="badge badge-${admStatusDisplay.toLowerCase()}">${admStatusDisplay}</span>`;
+                
+                return `
                 <tr>
                     <td class="truncate" title="${app.studentName}">${app.studentName}</td>
                     <td class="truncate" title="${app.courseName}">${app.courseName}</td>
-                    <td>${app.personalDetails.marks}%</td>
-                    <td><span class="badge badge-${app.status.toLowerCase()}">${app.status}</span></td>
+                    <td>${app.personalDetails ? app.personalDetails.marks : '0'}%</td>
+                    <td>${feeBadge}</td>
+                    <td>${statusBadge}</td>
                     <td>
-                        ${app.status === 'Pending' ? `
-                            <button class="btn btn-primary" onclick="updateStatus('${app.id}', 'Approved')">Approve</button>
-                        ` : '<i class="fas fa-check text-success"></i>'}
+                        ${admStatusDisplay === 'Pending' ? `
+                            <button class="btn btn-primary btn-sm" onclick="updateStatus('${app.id}', 'Approved')">Approve</button>
+                        ` : '<span class="text-success" style="font-weight:bold; font-size: 0.85rem;"><i class="fas fa-check-double"></i> Approved</span>'}
                     </td>
                 </tr>
-            `).join('');
+                `;
+            }).join('');
         }
 
         async function updateStatus(id, status) {
