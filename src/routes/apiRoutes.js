@@ -24,6 +24,16 @@ router.post('/courses', authenticate, isAdmin, async (req, res, next) => {
     await courseController.createCourse(req, res, next); 
     req.app.get('socketio').emit('stats-update'); 
 });
+router.get('/courses/stats', authenticate, isAdmin, async (req, res) => {
+    try {
+        const materialCounts = await Material.aggregate([
+            { $group: { _id: "$courseId", count: { $sum: 1 } } }
+        ]);
+        const result = {};
+        materialCounts.forEach(m => { result[m._id] = m.count; });
+        res.json(result);
+    } catch (error) { res.status(500).json({ message: 'Error fetching course stats' }); }
+});
 router.put('/courses/:id', authenticate, isAdmin, async (req, res, next) => { 
     await courseController.updateCourse(req, res, next); 
     req.app.get('socketio').emit('stats-update'); 
@@ -293,11 +303,13 @@ router.get('/stats', authenticate, isAdmin, async (req, res) => {
     try {
         const students = await User.countDocuments({ role: 'student' });
         const courses = await Course.countDocuments();
-        const admissions = await Admission.countDocuments({ status: 'Pending' });
+        const pendingAdmissions = await Admission.countDocuments({ status: 'Pending' });
+        const totalAdmissions = await Admission.countDocuments();
+        const activeStudents = await Admission.countDocuments({ status: { $in: ['Approved', 'Paid'] } });
         const notices = await Notice.countDocuments();
         const feePayments = await Payment.find({ status: 'success' });
         const revenue = feePayments.reduce((sum, f) => sum + (Number(f.amount) || 0), 0);
-        res.json({ students, courses, admissions, notices, revenue });
+        res.json({ students, courses, admissions: pendingAdmissions, totalAdmissions, activeStudents, notices, revenue });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching stats' });
     }

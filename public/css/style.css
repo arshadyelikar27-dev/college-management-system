@@ -1429,6 +1429,7 @@ select.form-input option { background: var(--bg-main); color: var(--text-primary
 
 .dashboard-chat-card { height: 600px; }
 .grid-admin-chat { display: grid; grid-template-columns: 320px 1fr; gap: 1.5rem; }
+.grid-admin-chat .nav-item span { display: inline-block !important; }
 
 @media (max-width: 768px) {
     .grid-admin-chat { grid-template-columns: 1fr !important; }

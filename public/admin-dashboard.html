@@ -572,16 +572,20 @@
         async function loadStats() {
             try {
                 const stats = await Api.get('/stats');
-                ['students','courses','admissions'].forEach(key => {
-                    const el = document.getElementById('stat-' + key);
-                    if (el) animateCounter(el, parseInt(stats[key]) || 0);
-                });
-                // Revenue counter
-                const revEl = document.getElementById('stat-revenue');
-                if (revEl) animateCounter(revEl, stats.revenue || 0, 1500, '₹');
+                const st = {
+                    students: document.getElementById('stat-students'),
+                    courses: document.getElementById('stat-courses'),
+                    admissions: document.getElementById('stat-admissions'),
+                    revenue: document.getElementById('stat-revenue')
+                };
+                
+                if (st.students) animateCounter(st.students, stats.students || 0);
+                if (st.courses) animateCounter(st.courses, stats.courses || 0);
+                if (st.admissions) animateCounter(st.admissions, stats.totalAdmissions || 0);
+                if (st.revenue) animateCounter(st.revenue, stats.revenue || 0, 1500, '₹');
 
                 const badge = document.getElementById('pending-badge');
-                if (badge) badge.textContent = stats.admissions || 0;
+                if (badge) badge.textContent = stats.admissions || 0; // Keep pending count for badge
             } catch(e) { }
         }
 
@@ -754,9 +758,10 @@
         async function loadLMSControl() {
             try {
                 // Fetch required data
-                const [coursesData, statsByCourse] = await Promise.all([
+                const [coursesData, statsByCourse, matStats] = await Promise.all([
                     Api.get('/courses'),
-                    Api.get('/admissions/approved-by-course')
+                    Api.get('/admissions/approved-by-course'),
+                    Api.get('/courses/stats')
                 ]);
                 const courses = coursesData.courses || [];
 
@@ -765,13 +770,14 @@
                     return;
                 }
 
-                // Render tabs
+                // Render tabs (showing material count in badge)
                 const tabsContainer = document.getElementById('lms-course-tabs');
                 tabsContainer.innerHTML = '<span style="font-size:0.78rem;color:var(--text-muted);align-self:center;margin-right:0.25rem;">COURSE:</span>' + 
                     courses.map(c => {
-                        const count = (statsByCourse[c._id] || []).length;
-                        return `<button class="btn btn-secondary btn-sm lms-course-tab" data-course-id="${c._id}" data-course-name="${c.name}" data-student-count="${count}" onclick="selectLMSCourse('${c._id}')" style="background:transparent;border:1px solid var(--border-glass);">
-                            ${c.name} <span class="badge ${count > 0 ? 'badge-success' : 'badge-pending'}" style="margin-left:0.4rem;font-size:0.6rem;">${count}</span>
+                        const mCount = matStats[c._id] || 0;
+                        const sCount = (statsByCourse[c._id] || []).length;
+                        return `<button class="btn btn-secondary btn-sm lms-course-tab" data-course-id="${c._id}" data-course-name="${c.name}" data-student-count="${sCount}" onclick="selectLMSCourse('${c._id}')" style="background:transparent;border:1px solid var(--border-glass);">
+                            ${c.name} <span class="badge ${mCount > 0 ? 'badge-success' : 'badge-pending'}" style="margin-left:0.4rem;font-size:0.6rem;">${mCount}</span>
                         </button>`;
                     }).join('');
 
@@ -969,20 +975,26 @@
             } catch(e) { showToast('error', 'Error', 'Could not load messages.'); }
         }
 
+        let lastChatHtml = '';
         function renderMessages(msgs) {
             const box = document.getElementById('chat-box');
             if (!msgs.length) {
                 box.innerHTML = `<div class="empty-state"><i class="fas fa-comments"></i><h4>No messages yet</h4><p>Start the conversation!</p></div>`;
+                lastChatHtml = '';
                 return;
             }
             const user = AuthService.getCurrentUser();
-            box.innerHTML = msgs.map(m => `
+            const newHtml = msgs.map(m => `
                 <div class="message ${m.senderId === user.id ? 'message-sent' : 'message-received'}">
                     <div style="font-size:0.65rem;opacity:0.6;margin-bottom:0.2rem;">
                         ${m.senderId === user.id ? 'You' : (m.senderId === 'ai-bot' ? '🤖 AI Bot' : m.senderName)}
                     </div>
                     ${m.content}
                 </div>`).join('');
+            
+            if (newHtml === lastChatHtml) return;
+            lastChatHtml = newHtml;
+            box.innerHTML = newHtml;
             box.scrollTop = box.scrollHeight;
         }
 

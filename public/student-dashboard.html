@@ -541,25 +541,49 @@
             finally { setButtonLoading(btn, false); }
         });
 
-        function downloadIDCard() {
+        let idCardProcessing = false;
+        async function downloadIDCard() {
+            if (idCardProcessing) return;
+            idCardProcessing = true;
             const btn = document.getElementById('download-id-btn');
             setButtonLoading(btn, true, 'Generating PDF');
-            const el = document.getElementById('id-card');
-            const w = el.offsetWidth, h = el.offsetHeight;
-            const opt = {
-                margin: 0,
-                filename: `CollegeHub_ID_${document.getElementById('id-card-name').textContent.replace(/\s+/g,'_')}.pdf`,
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 3, useCORS: true },
-                jsPDF: { unit: 'px', format: [w, h], orientation: w > h ? 'landscape' : 'portrait' }
-            };
-            const origShadow = el.style.boxShadow;
-            el.style.boxShadow = 'none';
-            html2pdf().set(opt).from(el).save().then(() => {
+            try {
+                const el = document.getElementById('id-card');
+                const name = document.getElementById('id-card-name').textContent.replace(/\s+/g,'_');
+                
+                // Ensure everything is rendered
+                await new Promise(r => setTimeout(r, 300));
+                
+                const opt = {
+                    margin: [0, 0],
+                    filename: `CollegeHub_ID_${name}.pdf`,
+                    image: { type: 'jpeg', quality: 1 },
+                    html2canvas: { 
+                        scale: 3, 
+                        useCORS: true, 
+                        logging: false,
+                        letterRendering: true,
+                        allowTaint: false,
+                        backgroundColor: null
+                    },
+                    jsPDF: { unit: 'px', format: [el.offsetWidth, el.offsetHeight], orientation: 'p' }
+                };
+                
+                const origShadow = el.style.boxShadow;
+                el.style.boxShadow = 'none';
+                
+                // Use from().set().save() pattern which is more reliable
+                await html2pdf().set(opt).from(el).save();
+                
                 el.style.boxShadow = origShadow;
-                setButtonLoading(btn, false);
                 showToast('success', 'Downloaded!', 'Your ID card PDF is ready.');
-            }).catch(() => { el.style.boxShadow = origShadow; setButtonLoading(btn, false); });
+            } catch (err) {
+                console.error('PDF Error:', err);
+                showToast('error', 'Download Failed', 'Could not generate PDF. Please try again.');
+            } finally {
+                setButtonLoading(btn, false);
+                idCardProcessing = false;
+            }
         }
 
         let cropperInstance = null;
@@ -752,13 +776,16 @@
         }
         setInterval(() => { if (!sections['helpdesk'].classList.contains('hidden')) loadChat(); }, 5000);
 
+        let lastChatHtml = '';
         function renderMessages(msgs) {
             const box = document.getElementById('student-chat-box');
             if (!msgs || !msgs.length) {
                 box.innerHTML = `<div class="empty-state"><i class="fas fa-comments"></i><h4>No messages yet</h4><p>Start a conversation with our support team.</p></div>`;
+                lastChatHtml = '';
                 return;
             }
-            box.innerHTML = msgs.map(m => `
+            
+            const newHtml = msgs.map(m => `
                 <div class="message ${m.senderId === user.id ? 'message-sent' : 'message-received'}">
                     <div style="font-size:0.65rem;opacity:0.6;margin-bottom:0.2rem;">
                         ${m.senderId === user.id ? 'You' : (m.senderId === 'ai-bot' ? '🤖 CollegeHub Bot' : 'Support Team')}
@@ -766,6 +793,11 @@
                     </div>
                     ${m.content}
                 </div>`).join('');
+            
+            if (newHtml === lastChatHtml) return; // Prevent blinking
+            
+            lastChatHtml = newHtml;
+            box.innerHTML = newHtml;
             box.scrollTop = box.scrollHeight;
         }
 
