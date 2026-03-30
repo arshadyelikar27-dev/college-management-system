@@ -85,7 +85,7 @@
                 </button>
                 <div class="user-profile" onclick="showSection('profile')">
                     <div class="avatar" id="user-avatar">S</div>
-                    <span id="user-name" style="font-weight:600;font-size:0.88rem;">Student</span>
+                    <span id="user-name" class="user-name-label" style="font-weight:600;font-size:0.88rem;">Student</span>
                     <i class="fas fa-chevron-down" style="font-size:0.65rem;color:var(--text-muted);"></i>
                 </div>
             </div>
@@ -205,7 +205,7 @@
 
         
         <section id="profile-section" class="hidden reveal">
-            <div class="grid-student-profile" style="display:grid;grid-template-columns:1fr 1.2fr;gap:2rem;align-items:flex-start;">
+            <div class="grid-student-profile" style="display:grid;gap:2rem;align-items:flex-start;">
                 
                 <div class="glass-card p-6">
                     <h3 style="margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border-glass);">
@@ -225,7 +225,7 @@
                             <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.6rem;">Click to change avatar</p>
                         </div>
 
-                        <div class="grid-apply-form" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                        <div class="grid-apply-form">
                             <div class="form-group" style="margin-bottom:0;">
                                 <label class="form-label">Mobile Number</label>
                                 <input type="tel" id="profile-phone" class="form-input" placeholder="+91 9876543210">
@@ -325,7 +325,7 @@
                 <form id="application-form">
                     <input type="hidden" id="apply-course-id">
                     <input type="hidden" id="apply-course-fee">
-                    <div class="grid-apply-form" style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem;">
+                    <div class="grid-apply-form" style="margin-bottom:1.5rem;">
                         <div class="form-group" style="margin-bottom:0;">
                             <label class="form-label">Full Legal Name</label>
                             <input type="text" id="apply-full-name" class="form-input" placeholder="John Doe" required>
@@ -351,7 +351,7 @@
                             <input type="number" id="apply-marks" class="form-input" placeholder="e.g. 90" min="0" max="100" required>
                         </div>
                     </div>
-                    <div class="flex gap-3">
+                    <div class="flex gap-3 modal-footer-btns">
                         <button type="button" class="btn btn-secondary w-full" onclick="closeModal()">Cancel</button>
                         <button type="submit" class="btn btn-primary w-full" id="apply-submit-btn">
                             Proceed to Payment <i class="fas fa-arrow-right"></i>

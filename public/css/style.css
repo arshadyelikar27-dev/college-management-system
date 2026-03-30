@@ -1398,27 +1398,41 @@ select.form-input option { background: var(--bg-main); color: var(--text-primary
 
 @media (max-width: 480px) {
   .stats-grid { grid-template-columns: 1fr !important; }
-  .modal-box { padding: 1.5rem; }
+  .modal-box { padding: 1.25rem; width: 95% !important; margin: 1rem auto; }
   .login-card, .register-card { padding: 1.5rem; }
   .hero-title { font-size: 1.8rem; }
   .stat-value { font-size: 1.75rem; }
-  .avatar { width: 32px; height: 32px; font-size: 0.75rem; }
-  .user-profile span, .user-profile i.fa-chevron-down { display: none !important; }
-  .user-profile { padding: 0.35rem !important; }
-  .nav-actions .btn-sm span { display: none !important; }
-  .nav-actions .btn-sm { padding: 0.5rem; aspect-ratio: 1; border-radius: 50%; min-width: 38px; }
-  .logo span { display: none !important; }
+  .avatar { width: 30px; height: 30px; font-size: 0.7rem; }
+  
+  /* Responsive Header Labels - Smaller but visible */
+  .user-profile span, .user-name-label { display: inline-block !important; font-size: 0.8rem !important; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .user-profile i.fa-chevron-down { display: none !important; }
+  .user-profile { padding: 0.25rem 0.5rem !important; gap: 0.4rem !important; }
+  
+  .nav-actions .btn-sm span { display: inline-block !important; font-size: 0.75rem !important; font-weight: 600; }
+  .nav-actions .btn-sm { padding: 0.4rem 0.75rem !important; border-radius: var(--radius-sm) !important; min-width: auto !important; height: auto !important; }
+  
+  .logo span { display: inline-block !important; font-size: 1.05rem !important; font-weight: 800; }
+  .logo i { font-size: 1.1rem !important; }
+  
+  .modal-footer-btns { flex-direction: column; gap: 0.75rem !important; }
+  .modal-footer-btns .btn { width: 100% !important; margin: 0 !important; } 
 }
 
-/* Sidebar Toggle fixes */
-.sidebar .sidebar-logo .menu-toggle { display: none !important; }
+/* Admission Form Fixes */
+.grid-apply-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 600px) {
+    .grid-apply-form { grid-template-columns: 1fr !important; gap: 0.75rem !important; }
+    .grid-apply-form > div { grid-column: span 1 !important; }
+    .form-group label { font-size: 0.72rem; margin-bottom: 0.2rem; }
+}
+
+.dashboard-chat-card { height: 600px; }
+.grid-admin-chat { display: grid; grid-template-columns: 320px 1fr; gap: 1.5rem; }
+
 @media (max-width: 768px) {
-    .sidebar.open .sidebar-logo .menu-toggle { display: flex !important; }
-}
-
-.grid-2nd { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-@media (max-width: 900px) {
-    .grid-2nd { grid-template-columns: 1fr !important; }
+    .grid-admin-chat { grid-template-columns: 1fr !important; }
+    .dashboard-chat-card { height: 500px; }
 }
 
 #dashboard-section, #admissions-section, #courses-section, #students-section,

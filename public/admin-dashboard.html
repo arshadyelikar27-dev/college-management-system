@@ -94,7 +94,7 @@
                 </button>
                 <div class="user-profile">
                     <div class="avatar">A</div>
-                    <span style="font-weight:600;font-size:0.88rem;">Administrator</span>
+                    <span class="user-name-label" style="font-weight:600;font-size:0.88rem;">Administrator</span>
                     <i class="fas fa-chevron-down" style="font-size:0.65rem;color:var(--text-muted);"></i>
                 </div>
             </div>
@@ -396,7 +396,7 @@
 
         
         <section id="notices-admin-section" class="hidden reveal">
-            <div class="stats-grid grid-admin-notice" style="grid-template-columns:1fr 1.2fr;">
+            <div class="grid-admin-notice">
                 <div class="glass-card p-8">
                     <h3 class="mb-6">Broadcast Announcement</h3>
                     <form id="notice-form">
@@ -434,14 +434,14 @@
 
         
         <section id="messages-admin-section" class="hidden reveal">
-            <div class="stats-grid grid-admin-chat" style="grid-template-columns:300px 1fr;">
-                <div class="glass-card flex flex-col" style="height:600px;">
+            <div class="grid-admin-chat">
+                <div class="glass-card flex flex-col dashboard-chat-card">
                     <div class="p-6 border-b">
                         <h3 style="font-size:1rem;"><i class="fas fa-ticket-alt text-gradient" style="margin-right:0.5rem;"></i>Active Tickets</h3>
                     </div>
                     <div id="chat-users-list" class="flex-1 custom-scroll p-2" style="overflow-y:auto;"></div>
                 </div>
-                <div class="glass-card flex flex-col" style="height:600px;">
+                <div class="glass-card flex flex-col dashboard-chat-card">
                     <div id="chat-header" class="p-6 border-b flex justify-between items-center">
                         <span class="font-bold text-gradient">Support Desk</span>
                         <span id="chat-status" class="badge badge-pending">Idle</span>
