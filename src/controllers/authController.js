@@ -42,10 +42,17 @@ const register = async (req, res) => {
         if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ name, email, password: hashedPassword, role: 'student' });
+        const newUser = new User({
+            name,
+            email,
+            password: hashedPassword,
+            role: 'student',
+            enrollNumber: `ENR${Math.floor(Math.random() * 90000) + 10000}`
+        });
         await newUser.save();
 
-        req.app.get('socketio').emit('stats-update');
+        const io = req.app.get('socketio');
+        if (io) io.emit('stats-update');
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });

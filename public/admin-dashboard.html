@@ -630,7 +630,8 @@
             const tbody = document.getElementById('courses-table');
             tbody.innerHTML = `<tr><td colspan="5"><div class="skeleton" style="height:40px;margin:0.5rem 0;"></div></td></tr>`.repeat(3);
             try {
-                const list = await Api.get('/courses');
+                const data = await Api.get('/courses');
+                const list = data.courses || [];
                 if (!list.length) {
                     tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-book-open"></i><h4>No courses yet</h4><p>Add your first course to get started.</p></div></td></tr>`;
                     return;
@@ -753,10 +754,11 @@
         async function loadLMSControl() {
             try {
                 // Fetch required data
-                const [courses, statsByCourse] = await Promise.all([
+                const [coursesData, statsByCourse] = await Promise.all([
                     Api.get('/courses'),
                     Api.get('/admissions/approved-by-course')
                 ]);
+                const courses = coursesData.courses || [];
 
                 if (!courses.length) {
                     document.getElementById('lms-course-tabs').innerHTML = '<span style="color:var(--text-muted);font-size:0.85rem;">No courses available. Create a course first.</span>';

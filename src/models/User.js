@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema({
   enrollNumber: {
     type: String,
     unique: true,
+    sparse: true,
   },
   createdAt: {
     type: Date,
