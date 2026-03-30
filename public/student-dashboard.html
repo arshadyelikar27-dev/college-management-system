@@ -21,7 +21,7 @@
                 <i class="fas fa-graduation-cap"></i>
                 <span>CollegeHub</span>
             </div>
-            <button class="menu-toggle" style="display:none;background:transparent;border:none;color:var(--text-secondary);cursor:pointer;font-size:1.1rem;padding:0.25rem;" onclick="document.getElementById('sidebar').classList.remove('open')">
+            <button class="menu-toggle" style="display:none;background:transparent;border:none;color:var(--text-secondary);cursor:pointer;font-size:1.1rem;padding:0.25rem;" onclick="toggleSidebar()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -60,7 +60,7 @@
         
         <header class="dashboard-header reveal">
             <div class="flex items-center gap-3">
-                <button class="menu-toggle btn btn-secondary btn-icon" id="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')" style="display:none;">
+                <button class="menu-toggle btn btn-secondary btn-icon" id="menu-btn" onclick="toggleSidebar()" style="display:none;">
                     <i class="fas fa-bars"></i>
                 </button>
                 <div>
@@ -363,7 +363,7 @@
 
         
         <div id="payment-modal" class="modal-overlay hidden">
-            <div class="glass-card reveal-scale" style="width:100%;max-width:780px;padding:2.5rem;display:flex;gap:2.5rem;background:#fff;color:#111;border-radius:var(--radius-lg);box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+            <div class="glass-card reveal-scale payment-modal-content" style="max-width:780px;display:flex;gap:2.5rem;background:#fff;color:#111;padding:2.5rem;border-radius:var(--radius-lg);box-shadow:0 25px 50px rgba(0,0,0,0.5);">
                 
                 <div style="flex:1;border-right:1px solid #e2e8f0;padding-right:2.5rem;display:flex;flex-direction:column;">
                     <h3 style="font-size:0.9rem;color:#334155;text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-bottom:2rem;">Checkout</h3>
@@ -446,14 +446,8 @@
         document.getElementById('user-name').textContent = user.name;
         document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
 
-        // Mobile menu
-        if (window.innerWidth <= 768) {
-            document.querySelectorAll('.menu-toggle').forEach(b => b.style.display = 'flex');
-        }
-        window.addEventListener('resize', () => {
-            const show = window.innerWidth <= 768;
-            document.querySelectorAll('.menu-toggle').forEach(b => b.style.display = show ? 'flex' : 'none');
-        });
+        // The menu visibility is now handled primarily by CSS media queries
+        // and the toggleSidebar() function in ui.js
 
         // Avatar hover
         document.querySelector('[onclick="document.getElementById(\'profile-upload\').click()"]')?.addEventListener('mouseover', function() {

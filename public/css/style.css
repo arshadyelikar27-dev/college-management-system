@@ -1397,18 +1397,53 @@ select.form-input option { background: var(--bg-main); color: var(--text-primary
 }
 
 @media (max-width: 480px) {
-  .stats-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr !important; }
   .modal-box { padding: 1.5rem; }
   .login-card, .register-card { padding: 1.5rem; }
   .hero-title { font-size: 1.8rem; }
   .stat-value { font-size: 1.75rem; }
   .avatar { width: 32px; height: 32px; font-size: 0.75rem; }
+  .user-profile span, .user-profile i.fa-chevron-down { display: none !important; }
+  .user-profile { padding: 0.35rem !important; }
+  .nav-actions .btn-sm span { display: none !important; }
+  .nav-actions .btn-sm { padding: 0.5rem; aspect-ratio: 1; border-radius: 50%; min-width: 38px; }
+  .logo span { display: none !important; }
+}
+
+/* Sidebar Toggle fixes */
+.sidebar .sidebar-logo .menu-toggle { display: none !important; }
+@media (max-width: 768px) {
+    .sidebar.open .sidebar-logo .menu-toggle { display: flex !important; }
+}
+
+.grid-2nd { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 900px) {
+    .grid-2nd { grid-template-columns: 1fr !important; }
 }
 
 #dashboard-section, #admissions-section, #courses-section, #students-section,
 #lms-admin-section, #notices-admin-section, #messages-admin-section,
 #applications-section, #lms-student-section, #notices-student-section,
 #helpdesk-section, #profile-section { width: 100%; }
+
+.payment-modal-content { transition: all 0.3s var(--transition-slow); }
+@media (max-width: 768px) {
+    .payment-modal-content {
+        flex-direction: column !important;
+        padding: 1.5rem !important;
+        height: 90vh;
+        overflow-y: auto;
+    }
+    .payment-modal-content > div {
+        border-right: none !important;
+        padding-right: 0 !important;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .payment-modal-content > div:last-child {
+        border-bottom: none;
+    }
+}
 
 @keyframes logoColorFlow {
   0%   { background-position: 0%   center; }

@@ -247,8 +247,9 @@ window.toggleSidebar = function() {
 
 document.addEventListener('click', (e) => {
     const sidebar = document.querySelector('.sidebar');
-    const toggle = document.querySelector('.menu-toggle');
-    if (window.innerWidth <= 768 && sidebar && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggle?.contains(e.target)) {
+    const toggles = document.querySelectorAll('.menu-toggle');
+    const isToggle = Array.from(toggles).some(t => t.contains(e.target));
+    if (window.innerWidth <= 768 && sidebar && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !isToggle) {
         sidebar.classList.remove('open');
     }
 });
