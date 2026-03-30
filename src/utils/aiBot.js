@@ -1,5 +1,4 @@
-const db = require('../models/db');
-const { v4: uuidv4 } = require('uuid');
+const Message = require('../models/Message');
 
 const KNOWLEDGE_BASE = [
     {
@@ -38,32 +37,31 @@ const KNOWLEDGE_BASE = [
 
 const generateBotResponse = (message) => {
     const input = message.toLowerCase();
-    
     for (const entry of KNOWLEDGE_BASE) {
         if (entry.keywords.some(kw => input.toLowerCase().includes(kw.toLowerCase()))) {
             return entry.response;
         }
     }
-    
     return "I'm not sure I understand that specifically. Our human support team has been notified and will get back to you soon. In the meantime, you can check the Help Desk or browse the sections for more info.";
 };
 
-const triggerBot = (studentId, studentName, userMessage, io) => {
-    setTimeout(() => {
-        const botResponse = generateBotResponse(userMessage);
-        const botMessage = {
-            id: uuidv4(),
-            senderId: 'ai-bot',
-            senderName: 'CollegeHub Bot',
-            receiverId: studentId,
-            studentId: studentId,
-            content: botResponse,
-            timestamp: new Date().toISOString()
-        };
-        
-        db.create('messages', botMessage);
-        
-        io.emit('new-message', botMessage);
+const triggerBot = async (studentId, studentName, userMessage, io) => {
+    setTimeout(async () => {
+        try {
+            const botResponse = generateBotResponse(userMessage);
+            const botMsg = new Message({
+                senderId: 'ai-bot',
+                senderName: 'CollegeHub Bot',
+                receiverId: studentId,
+                studentId: studentId,
+                content: botResponse,
+            });
+            
+            await botMsg.save();
+            io.emit('new-message', botMsg);
+        } catch (error) {
+            console.error('Bot Error:', error.message);
+        }
     }, 1000); 
 };
 

@@ -1,38 +1,66 @@
-const db = require('../models/db');
-const { v4: uuidv4 } = require('uuid');
+const Course = require('../models/Course');
 
-const getAllCourses = (req, res) => {
-    const courses = db.read('courses');
-    res.json(courses);
+const getAllCourses = async (req, res) => {
+    try {
+        const { search, page = 1, limit = 10 } = req.query;
+        let query = {};
+        if (search) {
+            query = { $text: { $search: search } };
+        }
+        const courses = await Course.find(query)
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec();
+
+        const count = await Course.countDocuments(query);
+        res.json({
+            courses,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching courses', error: error.message });
+    }
 };
 
-const createCourse = (req, res) => {
-    const { name, code, description, duration, fee } = req.body;
-    const newCourse = {
-        id: uuidv4(),
-        name,
-        code,
-        description,
-        duration,
-        fee: Number(fee)
-    };
-    db.create('courses', newCourse);
-    res.status(201).json({ message: 'Course created successfully', course: newCourse });
+const createCourse = async (req, res) => {
+    try {
+        const { name, code, description, duration, fee } = req.body;
+        const newCourse = new Course({
+            name,
+            code,
+            description,
+            duration,
+            fee: Number(fee)
+        });
+        await newCourse.save();
+        res.status(201).json({ message: 'Course created successfully', course: newCourse });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating course', error: error.message });
+    }
 };
 
-const updateCourse = (req, res) => {
-    const { id } = req.params;
-    const updates = req.body;
-    const updatedCourse = db.update('courses', id, updates);
-    if (!updatedCourse) return res.status(404).json({ message: 'Course not found' });
-    res.json({ message: 'Course updated', course: updatedCourse });
+const updateCourse = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+        const updatedCourse = await Course.findByIdAndUpdate(id, updates, { new: true });
+        if (!updatedCourse) return res.status(404).json({ message: 'Course not found' });
+        res.json({ message: 'Course updated', course: updatedCourse });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating course' });
+    }
 };
 
-const deleteCourse = (req, res) => {
-    const { id } = req.params;
-    const success = db.remove('courses', id);
-    if (!success) return res.status(404).json({ message: 'Course not found' });
-    res.json({ message: 'Course deleted' });
+const deleteCourse = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const success = await Course.findByIdAndDelete(id);
+        if (!success) return res.status(404).json({ message: 'Course not found' });
+        res.json({ message: 'Course deleted' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting course' });
+    }
 };
 
 module.exports = { getAllCourses, createCourse, updateCourse, deleteCourse };

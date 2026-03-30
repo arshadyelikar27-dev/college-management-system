@@ -1,5 +1,5 @@
-const db = require('../models/db');
-const { v4: uuidv4 } = require('uuid');
+const Admission = require('../models/Admission');
+const Payment = require('../models/Payment');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 
@@ -23,7 +23,7 @@ const createOrder = async (req, res) => {
         const options = {
             amount: Math.round(amount * 100), 
             currency: "INR",
-            receipt: `rcpt_${uuidv4().substring(0, 8)}`,
+            receipt: `rcpt_${Math.random().toString(36).substring(7)}`,
         };
 
         const order = await instance.orders.create(options);
@@ -39,7 +39,7 @@ const createOrder = async (req, res) => {
     }
 };
 
-const verifyPayment = (req, res) => {
+const verifyPayment = async (req, res) => {
     try {
         const { 
             razorpay_order_id, 
@@ -61,13 +61,12 @@ const verifyPayment = (req, res) => {
 
         if (razorpay_signature === expectedSign) {
 
-            const existingPayment = db.findOne('payments', p => p.orderId === razorpay_order_id);
+            const existingPayment = await Payment.findOne({ orderId: razorpay_order_id });
             if (existingPayment) {
                 return res.status(400).json({ message: "Payment already processed." });
             }
 
-            const newPayment = {
-                id: uuidv4(),
+            const newPayment = new Payment({
                 studentId: req.user.id,
                 name: req.user.name,
                 email: req.user.email || 'N/A',
@@ -75,12 +74,11 @@ const verifyPayment = (req, res) => {
                 paymentId: razorpay_payment_id,
                 orderId: razorpay_order_id,
                 status: "success",
-                createdAt: new Date().toISOString()
-            };
-            db.create('payments', newPayment);
+            });
+            await newPayment.save();
 
             if (admissionId) {
-                db.update('admissions', admissionId, { 
+                await Admission.findByIdAndUpdate(admissionId, { 
                     status: 'Paid', 
                     paymentId: razorpay_payment_id 
                 });

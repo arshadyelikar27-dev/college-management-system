@@ -1,9 +1,8 @@
-const db = require('../models/db');
+const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const axios = require('axios');
-const { v4: uuidv4 } = require('uuid');
 
 const SECRET_KEY = process.env.JWT_SECRET || 'super_secret_key_for_demo_purposes';
 const RESET_SECRET = process.env.JWT_RESET_SECRET || 'another_secret_for_resets';
@@ -39,12 +38,13 @@ const sendSms = async (mobile, otp) => {
 const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
-        const existingUser = db.findOne('users', user => user.email === email);
+        const existingUser = await User.findOne({ email });
         if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = { id: uuidv4(), name, email, password: hashedPassword, role: 'student', createdAt: new Date().toISOString() };
-        db.create('users', newUser);
+        const newUser = new User({ name, email, password: hashedPassword, role: 'student' });
+        await newUser.save();
+
         req.app.get('socketio').emit('stats-update');
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
@@ -55,14 +55,14 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = db.findOne('users', u => u.email === email);
+        const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ message: 'Invalid credentials' });
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-        const token = jwt.sign({ id: user.id, email: user.email, name: user.name, role: user.role }, SECRET_KEY, { expiresIn: '1d' });
-        res.json({ message: 'Login successful', token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+        const token = jwt.sign({ id: user._id, email: user.email, name: user.name, role: user.role }, SECRET_KEY, { expiresIn: '1d' });
+        res.json({ message: 'Login successful', token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
@@ -72,9 +72,8 @@ const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body; 
         const identifier = email.trim();
-        
 
-        const user = db.findOne('users', u => u.email === identifier || u.phone === identifier);
+        const user = await User.findOne({ $or: [{ email: identifier }, { phone: identifier }] });
         
         if (user) {
             const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -88,7 +87,6 @@ const forgotPassword = async (req, res) => {
             });
 
             if (identifier.includes('@')) {
-
                 const mailOptions = {
                     from: process.env.EMAIL_USER,
                     to: identifier,
@@ -97,12 +95,10 @@ const forgotPassword = async (req, res) => {
                 };
                 transporter.sendMail(mailOptions).catch(err => console.error('Email Fail:', err.message));
             } else {
-
                 if(/^\d+$/.test(identifier)) {
                     sendSms(identifier, otpCode);
                 }
             }
-            
         }
 
         res.json({ message: "If account exists, an OTP has been sent." });
@@ -152,11 +148,12 @@ const resetPassword = async (req, res) => {
         const decoded = jwt.verify(resetToken, RESET_SECRET);
         const identifier = decoded.identifier;
 
-        const user = db.findOne('users', u => u.email === identifier || u.phone === identifier);
+        const user = await User.findOne({ $or: [{ email: identifier }, { phone: identifier }] });
         if (!user) return res.status(404).json({ message: "Account not recovered." });
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-        db.update('users', user.id, { password: hashedPassword });
+        user.password = hashedPassword;
+        await user.save();
 
         res.json({ message: "Password updated successfully! You can login now." });
     } catch (error) {
@@ -172,4 +169,3 @@ module.exports = {
     resetPassword,
     SECRET_KEY
 };
-

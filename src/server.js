@@ -29,13 +29,11 @@ const io = new Server(server, {
     }
 });
 
-const PORT = process.env.PORT || 3000;
-
-const authRoutes = require('./routes/authRoutes');
-const apiRoutes = require('./routes/apiRoutes');
-const db = require('./models/db');
+const connectDB = require('./config/db');
+const User = require('./models/User');
 const bcrypt = require('bcryptjs');
-const { v4: uuidv4 } = require('uuid');
+
+const PORT = process.env.PORT || 3000;
 
 app.set('socketio', io);
 
@@ -52,52 +50,67 @@ app.use('/uploads', express.static(path.join(__dirname, '../public/uploads'), {
 }));
 
 const seedAdmin = async () => {
-    const adminEmail = process.env.ADMIN_EMAIL || 'arshadyelikar5@gmail.com';
-    const adminPass = process.env.ADMIN_PASS || 'Arshu@27';
+    try {
+        const adminEmail = process.env.ADMIN_EMAIL || 'arshadyelikar5@gmail.com';
+        const adminPass = process.env.ADMIN_PASS || 'Arshu@27';
 
-    const existingAdmin = db.findOne('users', u => u.role === 'admin');
-    if (!existingAdmin) {
-        const hashedPassword = await bcrypt.hash(adminPass, 10);
-        const adminUser = {
-            id: uuidv4(),
-            name: 'System Administrator',
-            email: adminEmail,
-            password: hashedPassword,
-            role: 'admin',
-            createdAt: new Date().toISOString()
-        };
-        db.create('users', adminUser);
-        
-    } else if (existingAdmin.email !== adminEmail) {
-
-        const hashedPassword = await bcrypt.hash(adminPass, 10);
-        db.update('users', existingAdmin.id, { email: adminEmail, password: hashedPassword });
-        
+        const existingAdmin = await User.findOne({ role: 'admin' });
+        if (!existingAdmin) {
+            const hashedPassword = await bcrypt.hash(adminPass, 10);
+            const adminUser = new User({
+                name: 'System Administrator',
+                email: adminEmail,
+                password: hashedPassword,
+                role: 'admin',
+            });
+            await adminUser.save();
+            console.log('Admin seeded successfully');
+        } else if (existingAdmin.email !== adminEmail) {
+            const hashedPassword = await bcrypt.hash(adminPass, 10);
+            existingAdmin.email = adminEmail;
+            existingAdmin.password = hashedPassword;
+            await existingAdmin.save();
+            console.log('Admin updated successfully');
+        }
+    } catch (error) {
+        console.error('Seeding Admin Error:', error.message);
     }
 };
-seedAdmin();
+
+const startServer = async () => {
+    try {
+        await connectDB();
+        await seedAdmin();
+        
+        server.listen(PORT, () => {
+            console.log(`Server is running on http://localhost:${PORT}`);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error.message);
+        process.exit(1);
+    }
+};
+
+startServer();
+
+const authRoutes = require('./routes/authRoutes');
+const apiRoutes = require('./routes/apiRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api', apiRoutes);
 
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 io.on('connection', (socket) => {
-    
-    
     socket.on('join-room', (roomId) => {
         socket.join(roomId);
-        
     });
 
     socket.on('disconnect', () => {
-        
+        // Handle disconnect
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
 
