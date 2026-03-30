@@ -8,7 +8,6 @@ const upload = require('../middleware/uploadMiddleware');
 const db = require('../models/db');
 const { v4: uuidv4 } = require('uuid');
 
-// AI Bot Logic (Inlined for reliability)
 const KNOWLEDGE_BASE = [
     { kw: ['hi', 'hello', 'hey'], res: "Hello! I am the CollegeHub AI Bot. Ask me about courses, fees, materials, or your ID card!" },
     { kw: ['fee', 'pay', 'money', 'cost'], res: "Fees can be paid in 'My Applications' once approved. We support all digital payments." },
@@ -40,47 +39,53 @@ const botReply = (studentId, text, io) => {
     }, 1000);
 };
 
-// Courses
 router.get('/courses', courseController.getAllCourses);
-router.post('/courses', authenticate, isAdmin, courseController.createCourse);
-router.put('/courses/:id', authenticate, isAdmin, courseController.updateCourse);
-router.delete('/courses/:id', authenticate, isAdmin, courseController.deleteCourse);
+router.post('/courses', authenticate, isAdmin, (req, res, next) => { courseController.createCourse(req, res, next); req.app.get('socketio').emit('stats-update'); });
+router.put('/courses/:id', authenticate, isAdmin, (req, res, next) => { courseController.updateCourse(req, res, next); req.app.get('socketio').emit('stats-update'); });
+router.delete('/courses/:id', authenticate, isAdmin, (req, res, next) => { courseController.deleteCourse(req, res, next); req.app.get('socketio').emit('stats-update'); });
 
-// Admissions
-router.post('/admissions', authenticate, admissionController.applyForAdmission);
+router.post('/admissions', authenticate, (req, res, next) => { admissionController.applyForAdmission(req, res, next); req.app.get('socketio').emit('stats-update'); });
 router.get('/admissions/my', authenticate, admissionController.getMyAdmissions);
 router.get('/admissions/all', authenticate, isAdmin, admissionController.getAllAdmissions);
-router.put('/admissions/:id/status', authenticate, isAdmin, admissionController.updateAdmissionStatus);
+router.put('/admissions/:id/status', authenticate, isAdmin, (req, res, next) => { admissionController.updateAdmissionStatus(req, res, next); req.app.get('socketio').emit('stats-update'); });
 router.delete('/admissions/:id', authenticate, isAdmin, admissionController.deleteAdmission);
 
-// Payment
 router.get('/payment/config', authenticate, paymentController.getConfig);
 router.post('/payment/create-order', authenticate, paymentController.createOrder);
 router.post('/payment/verify', authenticate, paymentController.verifyPayment);
 
-// --- Advanced Features ---
+function isStudentApproved(studentId) {
+    return db.read('admissions').some(
+        a => a.studentId === studentId && a.status === 'Approved'
+    );
+}
 
-// Notices
+function getApprovedCourseIds(studentId) {
+    return db.read('admissions')
+        .filter(a => a.studentId === studentId && a.status === 'Approved')
+        .map(a => a.courseId);
+}
+
 router.get('/notices', authenticate, (req, res) => {
-    const notices = db.read('notices');
-    res.json(notices.reverse());
+    if (req.user.role === 'admin') {
+        return res.json(db.read('notices').reverse());
+    }
+    if (!isStudentApproved(req.user.id)) {
+        return res.status(403).json({ message: 'Access denied. Your admission is not yet approved.' });
+    }
+    res.json(db.read('notices').reverse());
 });
 
 router.post('/notices', authenticate, isAdmin, (req, res) => {
     const { title, content, type } = req.body;
     const newNotice = {
-        id: uuidv4(),
-        title,
-        content,
+        id: uuidv4(), title, content,
         type: type || 'Info',
         date: new Date().toISOString(),
         author: req.user.name
     };
     db.create('notices', newNotice);
-    
-    // Real-time broadcast
     req.app.get('socketio').emit('new-notice', newNotice);
-    
     res.status(201).json(newNotice);
 });
 
@@ -96,18 +101,24 @@ router.delete('/notices', authenticate, isAdmin, (req, res) => {
     res.json({ message: 'All notices cleared' });
 });
 
-// Study Materials
 router.get('/materials', authenticate, (req, res) => {
-    res.json(db.read('materials'));
+    const all = db.read('materials');
+    if (req.user.role === 'admin') {
+        const { courseId } = req.query;
+        return res.json(courseId ? all.filter(m => m.courseId === courseId) : all);
+    }
+    if (!isStudentApproved(req.user.id)) {
+        return res.status(403).json({ message: 'Access denied. Your admission is not yet approved.' });
+    }
+    const approvedCourseIds = getApprovedCourseIds(req.user.id);
+    res.json(all.filter(m => approvedCourseIds.includes(m.courseId)));
 });
 
 router.post('/materials', authenticate, isAdmin, upload.single('file'), (req, res) => {
     const { title, courseId, description } = req.body;
+    if (!courseId) return res.status(400).json({ message: 'courseId is required' });
     const newMaterial = {
-        id: uuidv4(),
-        title,
-        courseId,
-        description,
+        id: uuidv4(), title, courseId, description,
         fileUrl: req.file ? `/uploads/${req.file.filename}` : null,
         fileName: req.file ? req.file.originalname : null,
         date: new Date().toISOString()
@@ -116,7 +127,12 @@ router.post('/materials', authenticate, isAdmin, upload.single('file'), (req, re
     res.status(201).json(newMaterial);
 });
 
-// Assignments
+router.delete('/materials/:id', authenticate, isAdmin, (req, res) => {
+    const success = db.remove('materials', req.params.id);
+    if (!success) return res.status(404).json({ message: 'Material not found' });
+    res.json({ message: 'Material deleted' });
+});
+
 router.get('/assignments/my', authenticate, (req, res) => {
     const assignments = db.find('assignments', a => a.studentId === req.user.id);
     res.json(assignments);
@@ -127,7 +143,6 @@ router.get('/assignments/all', authenticate, isAdmin, (req, res) => {
 });
 
 router.post('/assignments', authenticate, upload.single('file'), (req, res) => {
-    console.log('Assignment upload request received:', { title: req.body.title, file: req.file ? req.file.filename : 'none' });
     const { title, description, courseId } = req.body;
     const newAssignment = {
         id: uuidv4(),
@@ -158,7 +173,6 @@ router.delete('/assignments/:id', authenticate, isAdmin, (req, res) => {
     res.json({ message: 'Assignment deleted successfully' });
 });
 
-// Attendance
 router.get('/attendance/my', authenticate, (req, res) => {
     const attendance = db.find('attendance', a => a.studentId === req.user.id);
     res.json(attendance);
@@ -170,14 +184,13 @@ router.post('/attendance', authenticate, isAdmin, (req, res) => {
         id: uuidv4(),
         studentId,
         date,
-        status, // Present, Absent
+        status, 
         subject
     };
     db.create('attendance', newRecord);
     res.json(newRecord);
 });
 
-// Messaging / Help Desk
 router.get('/messages', authenticate, (req, res) => {
     const messages = db.read('messages');
     if (req.user.role === 'admin') {
@@ -199,25 +212,38 @@ router.post('/messages', authenticate, (req, res) => {
         timestamp: new Date().toISOString()
     };
     db.create('messages', newMessage);
-    
-    // Real-time broadcast
     req.app.get('socketio').emit('new-message', newMessage);
-
-    // AI Bot Integration
     if (req.user.role === 'student') {
         botReply(req.user.id, content, req.app.get('socketio'));
     }
-    
     res.status(201).json(newMessage);
 });
 
-// Stats
+router.get('/stats/public', (req, res) => {
+    const students = db.read('users').filter(u => u.role === 'student').length;
+    const courses = db.read('courses').length;
+    const notices = db.read('notices').length;
+    const materials = db.read('materials').length;
+    res.json({ students, courses, notices, materials });
+});
 router.get('/stats', authenticate, isAdmin, (req, res) => {
     const students = db.read('users').filter(u => u.role === 'student').length;
     const courses = db.read('courses').length;
     const admissions = db.read('admissions').filter(a => a.status === 'Pending').length;
     const notices = db.read('notices').length;
-    res.json({ students, courses, admissions, notices });
+    const feeCol = db.read('fees') || [];
+    const revenue = feeCol.reduce((sum, f) => sum + (parseFloat(f.amount) || 0), 0);
+    res.json({ students, courses, admissions, notices, revenue });
+});
+
+router.get('/admissions/approved-by-course', authenticate, isAdmin, (req, res) => {
+    const approved = db.read('admissions').filter(a => a.status === 'Approved');
+    const result = {};
+    approved.forEach(a => {
+        if (!result[a.courseId]) result[a.courseId] = [];
+        result[a.courseId].push(a.studentId);
+    });
+    res.json(result);
 });
 
 router.get('/users/students', authenticate, isAdmin, (req, res) => {
@@ -231,7 +257,6 @@ router.put('/users/profile', authenticate, (req, res) => {
     const { phone, bloodGroup, address, avatar, enrollNumber } = req.body;
     const userToUpdate = db.read('users').find(u => u.id === req.user.id);
     if (!userToUpdate) return res.status(404).json({ message: 'User not found' });
-    
     const updatedUser = {
         ...userToUpdate,
         phone: phone || userToUpdate.phone,
@@ -240,9 +265,7 @@ router.put('/users/profile', authenticate, (req, res) => {
         avatar: avatar || userToUpdate.avatar,
         enrollNumber: enrollNumber || userToUpdate.enrollNumber || `ENR${Math.floor(Math.random() * 90000) + 10000}`
     };
-    
     db.update('users', req.user.id, updatedUser);
-    
     const { password, ...safeUser } = updatedUser;
     res.json({ message: 'Profile updated successfully', user: safeUser });
 });
@@ -258,14 +281,10 @@ router.delete('/users/students/:id', authenticate, isAdmin, (req, res) => {
     const { id } = req.params;
     const deleted = db.remove('users', id);
     if (!deleted) return res.status(404).json({ message: 'User not found' });
-    
-    // Cleanup
     db.write('admissions', db.read('admissions').filter(a => a.studentId !== id));
     db.write('assignments', db.read('assignments').filter(a => a.studentId !== id));
     db.write('attendance', db.read('attendance').filter(a => a.studentId !== id));
-    
     res.json({ message: 'Student and related data deleted successfully' });
 });
 
 module.exports = router;
-

@@ -3,15 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="CollegeHub - The next generation College Management System with advanced automation and seamless experience.">
-    <title>CollegeHub | Next-Gen Management System</title>
+    <meta name="description" content="CollegeHub — Next-generation College Management System. Seamless admissions, smart payments, and AI-driven analytics.">
+    <title>CollegeHub | Next-Gen College Management</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="js/theme.js"></script>
+    <style>
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1.1rem;
+            background: rgba(99,102,241,0.1);
+            border: 1px solid rgba(99,102,241,0.25);
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            animation: fadeInUp 0.6s both;
+        }
+        .hero-title {
+            background: linear-gradient(135deg, #fff 30%, var(--primary) 70%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        [data-theme="light"] .hero-title {
+            background: linear-gradient(135deg, #0f172a 30%, var(--primary) 70%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-strip {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border-glass);
+        }
+        .stat-strip-item { text-align: center; }
+        .stat-strip-item .val {
+            font-size: 2.2rem;
+            font-weight: 900;
+            font-family: 'Outfit', sans-serif;
+        }
+        .stat-strip-item .lbl {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-top: 0.2rem;
+        }
+        .analytics-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+        .step-item {
+            display: flex;
+            gap: 1.25rem;
+            align-items: flex-start;
+        }
+        .step-num {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 0.9rem;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
+    
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
             <a href="/" class="logo">
@@ -23,126 +105,351 @@
                     <i class="fas fa-sun"></i>
                 </button>
                 <a href="login.html" class="btn btn-secondary btn-sm">Login</a>
-                <a href="register.html" class="btn btn-primary btn-sm">Admissions Open</a>
+                <a href="register.html" class="btn btn-primary btn-sm">Apply Now</a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    
     <header class="hero">
         <div class="container">
-            <div class="reveal">
-                <h1 class="hero-title">Empowering the Future of <span class="text-gradient">Education</span></h1>
-                <p class="hero-subtitle">
-                    A comprehensive, high-performance platform designed for the modern academic ecosystem. Experience seamless management of admissions, fees, and student progression.
-                </p>
-                <div class="flex justify-center gap-4 flex-wrap">
-                    <a href="register.html" class="btn btn-primary btn-lg" style="padding: 1rem 2.5rem; font-size: 1.1rem;">
-                        Get Started <i class="fas fa-arrow-right"></i>
-                    </a>
-                    <a href="#features" class="btn btn-secondary btn-lg" style="padding: 1rem 2.5rem; font-size: 1.1rem;">
-                        Explore Platform
-                    </a>
-                </div>
+            <div class="hero-badge">
+                <i class="fas fa-sparkles"></i>
+                AI-Powered Platform · 2026
             </div>
+            <h1 class="hero-title reveal" style="animation-delay:0.1s">
+                The Future of<br>College Management
+            </h1>
+            <p class="hero-subtitle reveal" style="animation-delay:0.2s">
+                A unified, high-performance platform for modern academic institutions. 
+                Seamless admissions, smart payments, and real-time analytics — all in one place.
+            </p>
+            <div class="flex justify-center gap-4 flex-wrap reveal" style="animation-delay:0.3s">
+                <a href="register.html" class="btn btn-primary btn-lg">
+                    Get Started Free <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#features" class="btn btn-secondary btn-lg">
+                    Explore Features
+                </a>
+            </div>
+
             
-            <!-- Hero Decorative Image/Element -->
-            <div class="reveal mt-4" style="animation-delay: 0.3s;">
-                <div class="glass-panel analytics-card" style="margin-top: 4rem; border-radius: 40px; height: 300px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
-                    <div style="position: absolute; width: 150%; height: 150%; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); filter: blur(50px); opacity: 0.5;"></div>
-                    <div class="floating" style="z-index: 1;">
-                        <i class="fas fa-microchip" style="font-size: 5rem; color: var(--accent); opacity: 0.8;"></i>
-                    </div>
-                    <div style="z-index: 1; margin-left: 2rem; border-left: 2px solid var(--border-glass); padding-left: 2rem;">
-                        <h3 style="font-size: 2rem; margin-bottom: 0.5rem;">AI-Driven Analytics</h3>
-                        <p style="color: var(--text-secondary);">Real-time tracking of academic performance and administrative efficiency.</p>
+            <div class="reveal" style="animation-delay:0.5s; margin-top: 5rem;">
+                <div class="glass-panel analytics-card" style="border-radius: 28px; min-height: 260px; padding: 2.5rem; overflow: hidden;">
+                    <div style="position:absolute;width:300px;height:300px;border-radius:50%;
+                        background:radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+                        filter:blur(60px);opacity:0.5;left:-80px;top:-80px;"></div>
+                    <div style="position:absolute;right:-60px;bottom:-60px;width:250px;height:250px;
+                        border-radius:50%;background:radial-gradient(circle, var(--secondary-glow) 0%,transparent 70%);
+                        filter:blur(60px);opacity:0.4;"></div>
+
+                    
+                    <div style="display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;z-index:1;position:relative;width:100%;">
+                        <div class="glass-card" style="padding:1.5rem 2rem;text-align:center;min-width:140px;flex:1;max-width:180px;">
+                            <div style="font-size:2rem;font-weight:900;font-family:'Outfit',sans-serif;" class="text-gradient" id="home-stat-students">0</div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-top:0.3rem;">Students</div>
+                            <div style="color:var(--success);font-size:0.75rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-arrow-up"></i> Live</div>
+                        </div>
+                        <div class="glass-card" style="padding:1.5rem 2rem;text-align:center;min-width:140px;flex:1;max-width:180px;">
+                            <div style="font-size:2rem;font-weight:900;font-family:'Outfit',sans-serif;" class="text-gradient" id="home-stat-courses">0</div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-top:0.3rem;">Active Courses</div>
+                            <div style="color:var(--info);font-size:0.75rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-layer-group"></i> Active</div>
+                        </div>
+                        <div class="glass-card" style="padding:1.5rem 2rem;text-align:center;min-width:140px;flex:1;max-width:180px;">
+                            <div style="font-size:2rem;font-weight:900;font-family:'Outfit',sans-serif;" class="text-gradient" id="home-stat-notices">0</div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-top:0.3rem;">Latest Notices</div>
+                            <div style="color:var(--warning);font-size:0.75rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-bullhorn"></i> New</div>
+                        </div>
+                        <div class="glass-card floating" style="padding:1.5rem 2rem;text-align:center;min-width:140px;flex:1;max-width:180px;">
+                            <div style="font-size:2rem;font-weight:900;font-family:'Outfit',sans-serif;" class="text-gradient" id="home-stat-materials">0</div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-top:0.3rem;">Resources</div>
+                            <div style="color:var(--accent);font-size:0.75rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-book-open"></i> PDFs</div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            
+
         </div>
     </header>
 
-    <!-- Features Section -->
-    <section id="features" class="container" style="padding: 10rem 2rem;">
-        <div class="reveal text-center" style="margin-bottom: 6rem;">
-            <h2 style="font-size: 3rem; margin-bottom: 1rem;">Intelligent <span class="text-gradient">Core Features</span></h2>
-            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Our platform offers state-of-the-art tools to manage every aspect of your institution with precision.</p>
-        </div>
-
-        <div class="feature-grid">
-            <!-- Feature 1 -->
-            <div class="glass-card feature-card reveal" style="animation-delay: 0.1s;">
-                <div class="icon-box">
-                    <i class="fas fa-id-card"></i>
-                </div>
-                <h3>Advanced Admissions</h3>
-                <p style="color: var(--text-secondary); margin-top: 1rem;">Streamlined application process with automated document verification and real-time status tracking for students.</p>
+    
+    <section id="features" style="padding: 8rem 0;">
+        <div class="container">
+            <div class="reveal text-center" style="margin-bottom:4rem;">
+                <div class="hero-badge" style="margin:0 auto 1rem;">Core Features</div>
+                <h2 style="font-size:clamp(2rem,4vw,3rem);">Everything Your Institution Needs</h2>
+                <p style="color:var(--text-secondary);max-width:550px;margin:1rem auto 0;line-height:1.7;">
+                    Purpose-built tools that bring clarity, efficiency, and delight to every workflow.
+                </p>
             </div>
 
-            <!-- Feature 2 -->
-            <div class="glass-card feature-card reveal" style="animation-delay: 0.2s;">
-                <div class="icon-box" style="background: linear-gradient(135deg, var(--secondary), var(--accent));">
-                    <i class="fas fa-wallet"></i>
+            <div class="feature-grid stagger">
+                <div class="glass-card feature-card reveal">
+                    <div class="icon-box"><i class="fas fa-id-card"></i></div>
+                    <h3>Smart Admissions</h3>
+                    <p style="color:var(--text-secondary);margin-top:0.75rem;line-height:1.7;">
+                        Streamlined application workflow with automated document processing, real-time status tracking, and instant notifications.
+                    </p>
+                    <div class="flex items-center gap-2 mt-4" style="font-size:0.8rem;color:var(--primary);font-weight:700;">
+                        <i class="fas fa-arrow-right"></i> Learn more
+                    </div>
                 </div>
-                <h3>Smart Payments</h3>
-                <p style="color: var(--text-secondary); margin-top: 1rem;">Integrated multi-channel fee management system. Instant receipts, automated reminders, and secure transactions.</p>
-            </div>
-
-            <!-- Feature 3 -->
-            <div class="glass-card feature-card reveal" style="animation-delay: 0.3s;">
-                <div class="icon-box" style="background: linear-gradient(135deg, var(--accent), var(--primary));">
-                    <i class="fas fa-chart-line"></i>
+                <div class="glass-card feature-card reveal" style="animation-delay:0.1s;">
+                    <div class="icon-box" style="background:linear-gradient(135deg,var(--secondary),var(--accent));">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h3>Integrated Payments</h3>
+                    <p style="color:var(--text-secondary);margin-top:0.75rem;line-height:1.7;">
+                        Razorpay-powered multi-channel fee management. Auto-receipts, reminders, and bank-grade transaction security.
+                    </p>
+                    <div class="flex items-center gap-2 mt-4" style="font-size:0.8rem;color:var(--primary);font-weight:700;">
+                        <i class="fas fa-arrow-right"></i> Learn more
+                    </div>
                 </div>
-                <h3>Interactive Dashboard</h3>
-                <p style="color: var(--text-secondary); margin-top: 1rem;">Personalized hubs for students and admins. Track progress, manage courses, and generate reports with a single click.</p>
+                <div class="glass-card feature-card reveal" style="animation-delay:0.2s;">
+                    <div class="icon-box" style="background:linear-gradient(135deg,var(--accent),var(--primary));">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Live Analytics</h3>
+                    <p style="color:var(--text-secondary);margin-top:0.75rem;line-height:1.7;">
+                        Real-time dashboards for students and admins. Track KPIs, generate reports, and make data-driven decisions instantly.
+                    </p>
+                    <div class="flex items-center gap-2 mt-4" style="font-size:0.8rem;color:var(--primary);font-weight:700;">
+                        <i class="fas fa-arrow-right"></i> Learn more
+                    </div>
+                </div>
+                <div class="glass-card feature-card reveal" style="animation-delay:0.3s;">
+                    <div class="icon-box" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>Learning Management</h3>
+                    <p style="color:var(--text-secondary);margin-top:0.75rem;line-height:1.7;">
+                        Upload study materials, manage assignments, track submissions, and grade students — all from one hub.
+                    </p>
+                    <div class="flex items-center gap-2 mt-4" style="font-size:0.8rem;color:var(--primary);font-weight:700;">
+                        <i class="fas fa-arrow-right"></i> Learn more
+                    </div>
+                </div>
+                <div class="glass-card feature-card reveal" style="animation-delay:0.4s;">
+                    <div class="icon-box" style="background:linear-gradient(135deg,#10b981,#06b6d4);">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>Live Support Chat</h3>
+                    <p style="color:var(--text-secondary);margin-top:0.75rem;line-height:1.7;">
+                        Real-time messaging between students and admin. AI-powered auto-replies ensure 24/7 support availability.
+                    </p>
+                    <div class="flex items-center gap-2 mt-4" style="font-size:0.8rem;color:var(--primary);font-weight:700;">
+                        <i class="fas fa-arrow-right"></i> Learn more
+                    </div>
+                </div>
+                <div class="glass-card feature-card reveal" style="animation-delay:0.5s;">
+                    <div class="icon-box" style="background:linear-gradient(135deg,#6366f1,#06b6d4);">
+                        <i class="fas fa-id-badge"></i>
+                    </div>
+                    <h3>Digital ID Cards</h3>
+                    <p style="color:var(--text-secondary);margin-top:0.75rem;line-height:1.7;">
+                        Generate premium digital ID cards with QR verification. Download as high-resolution PDF with one click.
+                    </p>
+                    <div class="flex items-center gap-2 mt-4" style="font-size:0.8rem;color:var(--primary);font-weight:700;">
+                        <i class="fas fa-arrow-right"></i> Learn more
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="glass-panel" style="padding: 5rem 0; margin-top: 5rem; border-radius: 60px 60px 0 0; border-bottom: none;">
+    
+    <section style="padding: 6rem 0; background: rgba(99,102,241,0.03); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass);">
         <div class="container">
-            <div class="flex justify-between items-center" style="flex-wrap: wrap; gap: 2rem;">
-                <div>
-                    <a href="/" class="logo" style="margin-bottom: 1rem;">
-                        <i class="fas fa-graduation-cap"></i>
-                        CollegeHub
-                    </a>
-                    <p style="color: var(--text-muted); max-width: 300px;">Elevating education management since 2026. Built with precision, powered by innovation.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;flex-wrap:wrap;">
+                <div class="reveal">
+                    <div class="hero-badge" style="margin-bottom:1.5rem;">Simple Process</div>
+                    <h2 style="font-size:clamp(1.8rem,3vw,2.8rem);margin-bottom:1.5rem;">Get started in minutes</h2>
+                    <p style="color:var(--text-secondary);margin-bottom:2.5rem;line-height:1.7;">
+                        From registration to admission approval — our streamlined workflow eliminates paperwork and delays.
+                    </p>
+                    <div class="step-list">
+                        <div class="step-item">
+                            <div class="step-num">1</div>
+                            <div>
+                                <h4 style="margin-bottom:0.4rem;">Create Account</h4>
+                                <p style="color:var(--text-secondary);font-size:0.88rem;line-height:1.6;">Register in seconds with just your name, email, and password.</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">2</div>
+                            <div>
+                                <h4 style="margin-bottom:0.4rem;">Choose Your Program</h4>
+                                <p style="color:var(--text-secondary);font-size:0.88rem;line-height:1.6;">Browse courses and submit your application with academic details.</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">3</div>
+                            <div>
+                                <h4 style="margin-bottom:0.4rem;">Pay &amp; Get Approved</h4>
+                                <p style="color:var(--text-secondary);font-size:0.88rem;line-height:1.6;">Secure payment via Razorpay triggers instant admin review.</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">4</div>
+                            <div>
+                                <h4 style="margin-bottom:0.4rem;">Access Your Dashboard</h4>
+                                <p style="color:var(--text-secondary);font-size:0.88rem;line-height:1.6;">Full access to LMS, notices, support, and your digital ID card.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex gap-4">
-                    <a href="#" style="color: var(--text-secondary); font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
-                    <a href="#" style="color: var(--text-secondary); font-size: 1.5rem;"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" style="color: var(--text-secondary); font-size: 1.5rem;"><i class="fab fa-github"></i></a>
+                <div class="reveal" style="animation-delay:0.2s;">
+                    <div class="glass-card" style="padding:2.5rem;border-radius:var(--radius-xl);">
+                        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border-glass);">
+                            <div class="avatar" style="width:48px;height:48px;font-size:1.1rem;">A</div>
+                            <div>
+                                <div style="font-weight:700;font-size:1rem;">Admin Dashboard</div>
+                                <div style="color:var(--success);font-size:0.78rem;display:flex;align-items:center;gap:0.35rem;">
+                                    <span style="width:6px;height:6px;background:var(--success);border-radius:50%;display:inline-block;animation:pulse-dot 2s infinite;"></span>
+                                    System Online
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display:flex;flex-direction:column;gap:0.85rem;">
+                            <div class="flex items-center gap-3" style="padding:0.75rem;background:rgba(16,185,129,0.06);border-radius:var(--radius-sm);border:1px solid rgba(16,185,129,0.12);">
+                                <i class="fas fa-check-circle" style="color:var(--success);width:16px;"></i>
+                                <div>
+                                    <div style="font-size:0.83rem;font-weight:600;">Priya Sharma — Approved</div>
+                                    <div style="font-size:0.72rem;color:var(--text-muted);">B.Sc Computer Science · 2 min ago</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3" style="padding:0.75rem;background:rgba(6,182,212,0.06);border-radius:var(--radius-sm);border:1px solid rgba(6,182,212,0.12);">
+                                <i class="fas fa-credit-card" style="color:var(--accent);width:16px;"></i>
+                                <div>
+                                    <div style="font-size:0.83rem;font-weight:600;">Fee Received — ₹45,000</div>
+                                    <div style="font-size:0.72rem;color:var(--text-muted);">Rahul Mehta · Razorpay · 5 min ago</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3" style="padding:0.75rem;background:rgba(245,158,11,0.06);border-radius:var(--radius-sm);border:1px solid rgba(245,158,11,0.12);">
+                                <i class="fas fa-file-alt" style="color:var(--warning);width:16px;"></i>
+                                <div>
+                                    <div style="font-size:0.83rem;font-weight:600;">New Application — Ananya K.</div>
+                                    <div style="font-size:0.72rem;color:var(--text-muted);">MBA Finance · Pending review</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3" style="padding:0.75rem;background:rgba(99,102,241,0.06);border-radius:var(--radius-sm);border:1px solid rgba(99,102,241,0.12);">
+                                <i class="fas fa-bullhorn" style="color:var(--primary);width:16px;"></i>
+                                <div>
+                                    <div style="font-size:0.83rem;font-weight:600;">Notice Broadcasted</div>
+                                    <div style="font-size:0.72rem;color:var(--text-muted);">Exam Schedule 2026 · All students</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div style="border-top: 1px solid var(--border-glass); margin-top: 3rem; padding-top: 2rem; text-align: center; color: var(--text-muted);">
-                <p>&copy; 2026 CollegeHub Management System. All rights reserved.</p>
             </div>
         </div>
-    </footer>
+    </section>
 
+    
+    <section style="padding: 8rem 0;">
+        <div class="container">
+            <div class="glass-card reveal text-center" style="padding:5rem 3rem;border-radius:var(--radius-xl);position:relative;overflow:hidden;">
+                <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(168,85,247,0.06),rgba(6,182,212,0.04));pointer-events:none;"></div>
+                <div style="position:relative;z-index:1;">
+                    <div class="hero-badge" style="margin:0 auto 1.5rem;">Limited Time</div>
+                    <h2 style="font-size:clamp(2rem,4vw,3.5rem);margin-bottom:1.25rem;">Ready to Transform<br>Your Institution?</h2>
+                    <p style="color:var(--text-secondary);margin-bottom:2.5rem;font-size:1.05rem;max-width:500px;margin-left:auto;margin-right:auto;">
+                        Join hundreds of institutions already using CollegeHub to streamline operations and delight students.
+                    </p>
+                    <div class="flex justify-center gap-4 flex-wrap">
+                        <a href="register.html" class="btn btn-primary btn-lg">
+                            Start Free Today <i class="fas fa-rocket"></i>
+                        </a>
+                        <a href="login.html" class="btn btn-secondary btn-lg">
+                            Sign In
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <footer class="glass-panel" style="padding:4rem 0;border-radius:40px 40px 0 0;border-bottom:none;margin-top:2rem;">
+        <div class="container">
+            <div class="flex justify-between items-center" style="flex-wrap:wrap;gap:2rem;">
+                <div>
+                    <a href="/" class="logo" style="margin-bottom:0.75rem;display:flex;">
+                        <i class="fas fa-graduation-cap"></i> CollegeHub
+                    </a>
+                    <p style="color:var(--text-muted);font-size:0.85rem;max-width:280px;margin-top:0.6rem;line-height:1.6;">
+                        Elevating education management since 2026. Built with precision, powered by innovation.
+                    </p>
+                </div>
+                <div class="flex gap-4">
+                    <a href="#" style="color:var(--text-secondary);font-size:1.25rem;transition:color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-secondary)'">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" style="color:var(--text-secondary);font-size:1.25rem;transition:color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-secondary)'">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" style="color:var(--text-secondary);font-size:1.25rem;transition:color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-secondary)'">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+            <div style="border-top:1px solid var(--border-glass);margin-top:2.5rem;padding-top:2rem;text-align:center;color:var(--text-muted);font-size:0.82rem;">
+                &copy; 2026 CollegeHub Management System. All rights reserved.
+            </div>
+        <script src="/socket.io/socket.io.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
     <script>
-        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
+            navbar.classList.toggle('scrolled', window.scrollY > 40);
         });
 
-        // Simple Intersection Observer for scroll animations
-        const observer = new IntersectionObserver((entries) => {
+        async function updateHomeStats() {
+            try {
+                const res = await fetch('/api/stats/public');
+                const data = await res.json();
+                
+                animateCounter(document.getElementById('home-stat-students'), data.students);
+                animateCounter(document.getElementById('home-stat-courses'), data.courses);
+                animateCounter(document.getElementById('home-stat-notices'), data.notices);
+                animateCounter(document.getElementById('home-stat-materials'), data.materials);
+                
+                const stripVals = document.querySelectorAll('.stat-strip-item .val');
+                if (stripVals[0]) animateCounter(stripVals[0], data.students, 1500, '');
+                if (stripVals[2]) animateCounter(stripVals[2], 500 + Math.floor(data.students/10), 1500, '');
+            } catch (e) {}
+        }
+
+        const socket = io();
+        socket.on('stats-update', updateHomeStats);
+        updateHomeStats();
+
+        const statNums = document.querySelectorAll('.stat-strip-item .val');
+        const statsObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('reveal');
+                    entry.target.style.opacity = '1';
+                    entry.target.style.animation = 'fadeInUp 0.6s both';
                 }
             });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.5 });
+        statNums.forEach(el => statsObserver.observe(el));
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.style.animationPlayState = 'running';
+            });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.reveal').forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
     </script>
 </body>
 </html>

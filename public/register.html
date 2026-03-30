@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Admission | CollegeHub</title>
+    <title>Register | CollegeHub</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="js/theme.js"></script>
@@ -13,95 +13,193 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 4rem 2rem;
+            padding: 3rem 1.5rem;
         }
         .register-card {
             width: 100%;
-            max-width: 550px;
-            padding: 3rem;
-            position: relative;
+            max-width: 520px;
         }
-        .theme-toggle-top {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
+        .strength-bar {
+            display: flex;
+            gap: 4px;
+            margin-top: 0.5rem;
         }
+        .strength-seg {
+            flex: 1;
+            height: 3px;
+            border-radius: 3px;
+            background: var(--border-glass);
+            transition: background 0.3s;
+        }
+        .strength-weak   .strength-seg:nth-child(1) { background: var(--danger); }
+        .strength-fair   .strength-seg:nth-child(-n+2) { background: var(--warning); }
+        .strength-good   .strength-seg:nth-child(-n+3) { background: var(--info); }
+        .strength-strong .strength-seg { background: var(--success); }
     </style>
 </head>
 <body>
+    <div class="back-btn-top">
+        <a href="javascript:history.back()" class="back-btn" title="Go Back">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+
     <div class="theme-toggle-top">
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
             <i class="fas fa-sun"></i>
         </button>
     </div>
-    <div class="glass-card register-card reveal">
-        <div style="text-align: center; margin-bottom: 2.5rem;">
-            <a href="/" class="logo" style="justify-content: center; margin-bottom: 1rem; font-size: 2rem;">
-                <i class="fas fa-graduation-cap"></i>
-                CollegeHub
+
+    <div class="glass-card register-card reveal-scale" style="padding:3rem;">
+        <div style="text-align:center;margin-bottom:2.5rem;">
+            <a href="/" class="logo" style="justify-content:center;margin-bottom:1rem;font-size:1.75rem;display:flex;">
+                <i class="fas fa-graduation-cap"></i> CollegeHub
             </a>
-            <h2 style="font-size: 1.5rem; color: var(--text-primary);">New Admission</h2>
-            <p style="color: var(--text-secondary); margin-top: 0.5rem;">Join our community and start your journey.</p>
+            <h2 style="font-size:1.6rem;">Create Your Account</h2>
+            <p style="color:var(--text-secondary);margin-top:0.4rem;font-size:0.88rem;">
+                Join CollegeHub and start your academic journey.
+            </p>
+        </div>
+
+        
+        <div style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:2.5rem;">
+            <div class="step-indicator active" id="step-ind-1" style="display:flex;flex-direction:column;align-items:center;gap:0.4rem;">
+                <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;color:white;">1</div>
+                <span style="font-size:0.68rem;font-weight:600;color:var(--primary);text-transform:uppercase;letter-spacing:0.05em;">Info</span>
+            </div>
+            <div style="flex:1;height:2px;background:var(--border-glass);margin:0 0.5rem;margin-bottom:1.2rem;" id="step-line-1"></div>
+            <div class="step-indicator" id="step-ind-2" style="display:flex;flex-direction:column;align-items:center;gap:0.4rem;">
+                <div id="step-circle-2" style="width:32px;height:32px;border-radius:50%;border:2px solid var(--border-glass);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;color:var(--text-muted);transition:all 0.3s;">2</div>
+                <span style="font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;" id="step-label-2">Password</span>
+            </div>
+            <div style="flex:1;height:2px;background:var(--border-glass);margin:0 0.5rem;margin-bottom:1.2rem;" id="step-line-2"></div>
+            <div class="step-indicator" id="step-ind-3" style="display:flex;flex-direction:column;align-items:center;gap:0.4rem;">
+                <div id="step-circle-3" style="width:32px;height:32px;border-radius:50%;border:2px solid var(--border-glass);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;color:var(--text-muted);transition:all 0.3s;">3</div>
+                <span style="font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;" id="step-label-3">Done</span>
+            </div>
         </div>
 
         <form id="registerForm">
-            <div class="form-group">
-                <label class="form-label" for="name">Full Name</label>
-                <div style="position: relative;">
-                    <i class="fas fa-user" style="position: absolute; left: 1rem; top: 1rem; color: var(--text-muted);"></i>
-                    <input type="text" id="name" class="form-input" required placeholder="John Doe" style="padding-left: 3rem;">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label" for="email">Email Address</label>
-                <div style="position: relative;">
-                    <i class="fas fa-envelope" style="position: absolute; left: 1rem; top: 1rem; color: var(--text-muted);"></i>
-                    <input type="email" id="email" class="form-input" required placeholder="john@example.com" style="padding-left: 3rem;">
-                </div>
-            </div>
             
-            <div class="form-group">
-                <label class="form-label" for="password">Choose Password</label>
-                <div style="position: relative;">
-                    <i class="fas fa-lock" style="position: absolute; left: 1rem; top: 1rem; color: var(--text-muted);"></i>
-                    <input type="password" id="password" class="form-input" required placeholder="••••••••" style="padding-left: 3rem; padding-right: 3rem;">
-                    <i class="fas fa-eye" id="togglePasswordRegister" style="position: absolute; right: 1rem; top: 1rem; color: var(--text-muted); cursor: pointer;" onclick="togglePasswordVisibility('password', 'togglePasswordRegister')"></i>
+            <div id="step-1">
+                <div class="form-group">
+                    <label class="form-label" for="name">Full Name</label>
+                    <div style="position:relative;">
+                        <i class="fas fa-user" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.9rem;"></i>
+                        <input type="text" id="name" class="form-input" required placeholder="John Doe" style="padding-left:2.8rem;">
+                    </div>
                 </div>
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <div style="position:relative;">
+                        <i class="fas fa-envelope" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.9rem;"></i>
+                        <input type="email" id="email" class="form-input" required placeholder="john@example.com" style="padding-left:2.8rem;">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary w-full" style="height:50px;font-size:0.95rem;" onclick="goToStep2()">
+                    Continue <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
 
-            <div id="error-message" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.875rem; margin-bottom: 1.5rem; display: none; border-left: 4px solid var(--danger);"></div>
-            <div id="success-message" style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.875rem; margin-bottom: 1.5rem; display: none; border-left: 4px solid var(--success);"></div>
+            
+            <div id="step-2" class="hidden">
+                <div class="form-group">
+                    <label class="form-label" for="password">Choose Password</label>
+                    <div style="position:relative;">
+                        <i class="fas fa-lock" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.9rem;"></i>
+                        <input type="password" id="password" class="form-input" required placeholder="min. 8 characters" style="padding-left:2.8rem;padding-right:3rem;" oninput="checkStrength(this.value)">
+                        <button type="button" onclick="togglePasswordVisibility('password','toggleReg')"
+                            id="toggleReg" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.9rem;padding:0;">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="strength-bar" id="strength-bar">
+                        <div class="strength-seg"></div>
+                        <div class="strength-seg"></div>
+                        <div class="strength-seg"></div>
+                        <div class="strength-seg"></div>
+                    </div>
+                    <div id="strength-label" style="font-size:0.72rem;color:var(--text-muted);margin-top:0.3rem;"></div>
+                </div>
 
-            <button type="submit" class="btn btn-primary w-full" id="submitBtn" style="height: 50px;">
-                Create Account <i class="fas fa-user-plus"></i>
-            </button>
+                <div id="error-message" style="display:none;background:rgba(239,68,68,0.08);color:var(--danger);padding:0.85rem 1rem;border-radius:var(--radius-sm);font-size:0.855rem;margin-bottom:1.25rem;border-left:3px solid var(--danger);"></div>
+                <div id="success-message" style="display:none;background:rgba(16,185,129,0.08);color:var(--success);padding:0.85rem 1rem;border-radius:var(--radius-sm);font-size:0.855rem;margin-bottom:1.25rem;border-left:3px solid var(--success);"></div>
+
+                <div class="flex gap-3">
+                    <button type="button" class="btn btn-secondary" style="height:50px;flex:1;" onclick="goToStep1()">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn" style="height:50px;flex:2;font-size:0.95rem;">
+                        Create Account <i class="fas fa-user-plus"></i>
+                    </button>
+                </div>
+            </div>
         </form>
 
-        <div style="text-align: center; margin-top: 2rem; font-size: 0.9375rem; color: var(--text-secondary);">
-            Already have an account? <a href="login.html" class="text-gradient" style="font-weight: 700;">Sign In Instead</a>
+        <div style="text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border-glass);font-size:0.9rem;color:var(--text-secondary);">
+            Already have an account?
+            <a href="login.html" class="text-gradient" style="font-weight:700;margin-left:0.3rem;">Sign In</a>
         </div>
     </div>
 
+    <script src="js/ui.js"></script>
     <script src="js/api.js"></script>
     <script>
-        function togglePasswordVisibility(inputId, iconId) {
+        function togglePasswordVisibility(inputId, btnId) {
             const input = document.getElementById(inputId);
-            const icon = document.getElementById(iconId);
+            const btn = document.getElementById(btnId);
+            const icon = btn.querySelector('i');
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
+                icon.className = 'fas fa-eye-slash';
             } else {
                 input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+                icon.className = 'fas fa-eye';
             }
         }
 
+        function checkStrength(val) {
+            const bar = document.getElementById('strength-bar');
+            const label = document.getElementById('strength-label');
+            bar.className = 'strength-bar';
+            if (!val) { label.textContent = ''; return; }
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+            const levels = ['', 'strength-weak', 'strength-fair', 'strength-good', 'strength-strong'];
+            const labels = ['', 'Weak', 'Fair', 'Good', 'Strong 🔒'];
+            const colors = ['', 'var(--danger)', 'var(--warning)', 'var(--info)', 'var(--success)'];
+            bar.classList.add(levels[score] || '');
+            label.textContent = labels[score] || '';
+            label.style.color = colors[score] || '';
+        }
+
+        function goToStep2() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            if (!name || !email) { showToast('warning', 'Missing Fields', 'Please fill in all fields.'); return; }
+            if (!email.includes('@')) { showToast('error', 'Invalid Email', 'Please enter a valid email address.'); return; }
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+
+            const c2 = document.getElementById('step-circle-2');
+            c2.style.background = 'linear-gradient(135deg,var(--primary),var(--secondary))';
+            c2.style.color = 'white';
+            c2.style.border = 'none';
+            document.getElementById('step-label-2').style.color = 'var(--primary)';
+            document.getElementById('step-line-1').style.background = 'linear-gradient(to right,var(--primary),var(--secondary))';
+        }
+
+        function goToStep1() {
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-1').classList.remove('hidden');
+        }
+
         const registerForm = document.getElementById('registerForm');
-        const errorMessage = document.getElementById('error-message');
-        const successMessage = document.getElementById('success-message');
+        const errorMsg = document.getElementById('error-message');
+        const successMsg = document.getElementById('success-message');
         const submitBtn = document.getElementById('submitBtn');
 
         registerForm.addEventListener('submit', async (e) => {
@@ -109,24 +207,35 @@
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-            submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
-            submitBtn.disabled = true;
+
+            if (password.length < 8) {
+                showToast('error', 'Weak Password', 'Password must be at least 8 characters.');
+                return;
+            }
+
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            setButtonLoading(submitBtn, true, 'Creating account');
 
             try {
                 await AuthService.register({ name, email, password });
-                successMessage.textContent = 'Account created! Redirecting to login...';
-                successMessage.style.display = 'block';
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
+
+                const c3 = document.getElementById('step-circle-3');
+                c3.style.background = 'linear-gradient(135deg,var(--success),var(--accent))';
+                c3.style.color = 'white';
+                c3.style.border = 'none';
+                c3.innerHTML = '<i class="fas fa-check"></i>';
+                document.getElementById('step-label-3').style.color = 'var(--success)';
+                document.getElementById('step-line-2').style.background = 'linear-gradient(to right,var(--primary),var(--success))';
+
+                showSuccessAnim('Account created successfully!');
+                showToast('success', 'Welcome!', 'Account created! Redirecting to login...');
+                setTimeout(() => { window.location.href = 'login.html'; }, 2200);
             } catch (error) {
-                errorMessage.textContent = error.message;
-                errorMessage.style.display = 'block';
-                submitBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
-                submitBtn.disabled = false;
+                errorMsg.textContent = error.message;
+                errorMsg.style.display = 'block';
+                showToast('error', 'Registration Failed', error.message);
+                setButtonLoading(submitBtn, false);
             }
         });
     </script>

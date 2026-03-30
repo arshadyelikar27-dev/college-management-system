@@ -21,7 +21,7 @@ const createOrder = async (req, res) => {
         });
 
         const options = {
-            amount: Math.round(amount * 100), // amount in smallest currency unit (paise)
+            amount: Math.round(amount * 100), 
             currency: "INR",
             receipt: `rcpt_${uuidv4().substring(0, 8)}`,
         };
@@ -46,7 +46,7 @@ const verifyPayment = (req, res) => {
             razorpay_payment_id, 
             razorpay_signature, 
             admissionId,
-            amount // We can pass this from frontend to record it
+            amount 
         } = req.body;
 
         if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -60,13 +60,12 @@ const verifyPayment = (req, res) => {
             .digest("hex");
 
         if (razorpay_signature === expectedSign) {
-            // Check for duplicate payment processing
+
             const existingPayment = db.findOne('payments', p => p.orderId === razorpay_order_id);
             if (existingPayment) {
                 return res.status(400).json({ message: "Payment already processed." });
             }
 
-            // Create Payment schema record
             const newPayment = {
                 id: uuidv4(),
                 studentId: req.user.id,
@@ -80,7 +79,6 @@ const verifyPayment = (req, res) => {
             };
             db.create('payments', newPayment);
 
-            // Update admission status to "Paid"
             if (admissionId) {
                 db.update('admissions', admissionId, { 
                     status: 'Paid', 

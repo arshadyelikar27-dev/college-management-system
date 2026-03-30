@@ -5,7 +5,6 @@ const applyForAdmission = (req, res) => {
     const { courseId, personalDetails } = req.body;
     const studentId = req.user.id;
 
-    // Optional: Check if already applied for this course
     const existing = db.findOne('admissions', a => a.studentId === studentId && a.courseId === courseId);
     if (existing) {
         return res.status(400).json({ message: 'Already applied for this course' });
@@ -17,7 +16,7 @@ const applyForAdmission = (req, res) => {
     const application = {
         id: uuidv4(),
         studentId,
-        studentName: req.user.name || personalDetails.fullName, // simplified
+        studentName: req.user.name || personalDetails.fullName, 
         courseId,
         courseName: course.name,
         personalDetails,
@@ -45,12 +44,12 @@ const getAllAdmissions = (req, res) => {
 
 const updateAdmissionStatus = (req, res) => {
     const { id } = req.params;
-    const { status } = req.body; // Approved, Rejected
+    const { status } = req.body; 
 
     const updated = db.update('admissions', id, { status });
     if (!updated) return res.status(404).json({ message: 'Application not found' });
     
-    // If approved, maybe create a "Student Record" or link to fees.
+
     
     res.json({ message: `Application ${status}`, application: updated });
 };

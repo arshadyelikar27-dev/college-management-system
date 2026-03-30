@@ -1,18 +1,1 @@
-[
-  {
-    "id": "fa9663ea-15cd-4811-a936-4e9f1fe9de5c",
-    "title": "Test Material",
-    "courseId": "c2",
-    "fileUrl": "/uploads/d58d3c64-58e1-482b-b168-7d71af24e7fa.txt",
-    "fileName": "test.txt",
-    "date": "2026-03-15T02:49:44.925Z"
-  },
-  {
-    "id": "3381e051-e196-45fe-a0de-ccfa722fd268",
-    "title": "DFH Assignment 1",
-    "courseId": "b1d1793b-9829-4ed0-8d4a-713e1f11c657",
-    "fileUrl": "/uploads/b823a3a8-e010-43d6-a008-61624e6e4930.pdf",
-    "fileName": "DFH assignment 1.pdf",
-    "date": "2026-03-18T08:49:39.764Z"
-  }
-]
+[]

@@ -20,7 +20,7 @@ class Api {
         if (body) {
             if (body instanceof FormData) {
                 config.body = body;
-                // Fetch will set correct Content-Type with boundary for FormData
+
             } else {
                 headers['Content-Type'] = 'application/json';
                 config.body = JSON.stringify(body);
@@ -66,7 +66,6 @@ class Api {
     }
 }
 
-// Auth Helper
 class AuthService {
     static async login(email, password) {
         const response = await Api.post('/auth/login', { email, password });

@@ -62,9 +62,9 @@ const triggerBot = (studentId, studentName, userMessage, io) => {
         };
         
         db.create('messages', botMessage);
-        console.log(`🤖 Bot Responding to ${studentId}: ${botResponse}`);
+        
         io.emit('new-message', botMessage);
-    }, 1000); // 1 second delay for "typing" effect
+    }, 1000); 
 };
 
 module.exports = { triggerBot };
