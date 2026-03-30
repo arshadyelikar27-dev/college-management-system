@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const personalDetailsSchema = new mongoose.Schema({
   fullName: String,
-  mobile: String,
+  phone: String,
+  mobile: String, // Keeping mobile for compatibility
   email: String,
   gender: String,
   dob: String,
@@ -10,6 +11,8 @@ const personalDetailsSchema = new mongoose.Schema({
   parentName: String,
   parentMobile: String,
   address: String,
+  prevSchool: String, // Added
+  marks: String,      // Added
   tenthMarks: String,
   twelfthMarks: String,
 });

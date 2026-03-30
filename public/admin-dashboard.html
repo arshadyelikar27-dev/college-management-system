@@ -604,7 +604,7 @@
                     let admStatus = app.status === 'Paid' ? 'Pending' : app.status;
                     const statusBadge = `<span class="badge badge-${admStatus.toLowerCase()}">${admStatus}</span>`;
                     const action = admStatus === 'Pending'
-                        ? `<button class="btn btn-primary btn-sm" onclick="updateStatus('${app.id}','Approved')"><i class="fas fa-check"></i> Approve</button>`
+                        ? `<button class="btn btn-primary btn-sm" onclick="updateStatus('${app._id}','Approved')"><i class="fas fa-check"></i> Approve</button>`
                         : `<span style="color:var(--success);font-size:0.8rem;font-weight:700;"><i class="fas fa-check-double"></i> Approved</span>`;
                     return `<tr>
                         <td><strong>${app.studentName}</strong></td>
@@ -642,7 +642,7 @@
                     <td>${c.duration || '—'}</td>
                     <td><span style="font-weight:700;color:var(--success);">₹${parseInt(c.fee).toLocaleString()}</span></td>
                     <td>
-                        <button class="btn btn-danger btn-sm" onclick="deleteCourse('${c.id}')"><i class="fas fa-trash"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteCourse('${c._id}')"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>`).join('');
             } catch(e) { showToast('error', 'Error', 'Could not load courses.'); }
@@ -668,8 +668,8 @@
                     <td style="color:var(--text-muted);font-size:0.85rem;">${new Date(s.createdAt).toLocaleDateString()}</td>
                     <td style="text-align:right;">
                         <div class="flex gap-2 justify-end">
-                            <button class="btn btn-secondary btn-sm" onclick="openStudentModal('${s.id}')"><i class="fas fa-eye"></i></button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteStudent('${s.id}')"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-secondary btn-sm" onclick="openStudentModal('${s._id}')"><i class="fas fa-eye"></i></button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteStudent('${s._id}')"><i class="fas fa-trash"></i></button>
                         </div>
                     </td>
                 </tr>`).join('');
@@ -713,7 +713,7 @@
                         <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6;margin:0.5rem 0;">${n.content}</p>
                         <div class="flex justify-between items-center mt-3" style="font-size:0.75rem;color:var(--text-muted);">
                             <span><i class="fas fa-clock" style="margin-right:0.3rem;"></i>${new Date(n.createdAt).toLocaleString()}</span>
-                            <button class="btn btn-danger btn-sm" onclick="deleteNotice('${n.id}')"><i class="fas fa-trash"></i> Delete</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteNotice('${n._id}')"><i class="fas fa-trash"></i> Delete</button>
                         </div>
                     </div>`).join('');
             } catch(e) { showToast('error', 'Error', 'Could not load notices.'); }
@@ -769,15 +769,15 @@
                 const tabsContainer = document.getElementById('lms-course-tabs');
                 tabsContainer.innerHTML = '<span style="font-size:0.78rem;color:var(--text-muted);align-self:center;margin-right:0.25rem;">COURSE:</span>' + 
                     courses.map(c => {
-                        const count = (statsByCourse[c.id] || []).length;
-                        return `<button class="btn btn-secondary btn-sm lms-course-tab" data-course-id="${c.id}" data-course-name="${c.name}" data-student-count="${count}" onclick="selectLMSCourse('${c.id}')" style="background:transparent;border:1px solid var(--border-glass);">
+                        const count = (statsByCourse[c._id] || []).length;
+                        return `<button class="btn btn-secondary btn-sm lms-course-tab" data-course-id="${c._id}" data-course-name="${c.name}" data-student-count="${count}" onclick="selectLMSCourse('${c._id}')" style="background:transparent;border:1px solid var(--border-glass);">
                             ${c.name} <span class="badge ${count > 0 ? 'badge-success' : 'badge-pending'}" style="margin-left:0.4rem;font-size:0.6rem;">${count}</span>
                         </button>`;
                     }).join('');
 
                 // Select first course by default if none selected
-                if (!window._activeLMSCourse || !courses.find(c => c.id === window._activeLMSCourse)) {
-                    selectLMSCourse(courses[0].id);
+                if (!window._activeLMSCourse || !courses.find(c => c._id === window._activeLMSCourse)) {
+                    selectLMSCourse(courses[0]._id);
                 } else {
                     selectLMSCourse(window._activeLMSCourse);
                 }
@@ -844,7 +844,7 @@
                             </div>
                             <div class="flex gap-2">
                                 <a href="${m.fileUrl}" download class="btn btn-secondary btn-sm btn-icon"><i class="fas fa-download"></i></a>
-                                <button class="btn btn-danger btn-sm btn-icon" onclick="deleteMaterial('${m.id}')"><i class="fas fa-trash-alt"></i></button>
+                                <button class="btn btn-danger btn-sm btn-icon" onclick="deleteMaterial('${m._id}')"><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>`).join('');
                 }
@@ -859,7 +859,7 @@
                                 <p class="font-bold text-gradient" style="font-size:0.9rem;">${s.studentName || 'Student'}</p>
                                 <div class="flex gap-2">
                                     <span class="badge badge-submitted">Assignment</span>
-                                    <button class="btn btn-danger btn-sm" style="padding:0.25rem 0.5rem;" onclick="deleteAssignment('${s.id}')"><i class="fas fa-trash-alt"></i></button>
+                                    <button class="btn btn-danger btn-sm" style="padding:0.25rem 0.5rem;" onclick="deleteAssignment('${s._id}')"><i class="fas fa-trash-alt"></i></button>
                                 </div>
                             </div>
                             <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.75rem;">${s.title}</p>
@@ -951,7 +951,7 @@
                     return;
                 }
                 list.innerHTML = students.map(s => `
-                    <div class="nav-item cursor-pointer" onclick="openChat('${s.id}','${s.name}')">
+                    <div class="nav-item cursor-pointer" onclick="openChat('${s._id}','${s.name}')">
                         <div class="avatar" style="width:30px;height:30px;font-size:0.75rem;">${s.name.charAt(0)}</div>
                         <span>${s.name}</span>
                     </div>`).join('');
@@ -1032,7 +1032,7 @@
                 const [students, admissions, assignments] = await Promise.all([
                     Api.get('/users/students'), Api.get('/admissions/all'), Api.get('/assignments/all')
                 ]);
-                const s = students.find(u => u.id === id);
+                const s = students.find(u => u._id === id);
                 if (!s) throw new Error('Student not found');
                 const sa = admissions.filter(a => a.studentId === id);
                 const sas = assignments.filter(a => a.studentId === id);

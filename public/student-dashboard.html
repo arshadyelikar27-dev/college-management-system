@@ -603,7 +603,7 @@
                     <td><span class="badge badge-${app.status.toLowerCase()}">${app.status}</span></td>
                     <td>
                         ${(app.status === 'Approved' || app.status === 'Pending')
-                            ? `<button class="btn btn-primary btn-sm" onclick="payFee('${app.id}',${app.courseFee||0},'${app.courseName}')"><i class="fas fa-credit-card"></i> Pay Fee</button>`
+                            ? `<button class="btn btn-primary btn-sm" onclick="payFee('${app._id}',${app.courseFee||0},'${app.courseName}')"><i class="fas fa-credit-card"></i> Pay Fee</button>`
                             : `<span style="color:var(--text-muted);font-size:0.82rem;">—</span>`}
                     </td>
                 </tr>`).join('');
@@ -631,7 +631,7 @@
                                 <div style="font-weight:800;font-size:1.3rem;color:var(--success);">₹${parseInt(c.fee).toLocaleString()}</div>
                                 <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.1rem;">${c.duration || 'Duration TBD'}</div>
                             </div>
-                            <button class="btn btn-primary btn-sm" onclick="openApplyModal('${c.id}','${c.name}',${c.fee})">
+                            <button class="btn btn-primary btn-sm" onclick="openApplyModal('${c._id}','${c.name}',${c.fee})">
                                 <i class="fas fa-paper-plane"></i> Apply
                             </button>
                         </div>
@@ -866,7 +866,7 @@
                 closeModal();
                 const feeStr = document.getElementById('apply-course-fee').value;
                 const cname = document.getElementById('apply-course-name').textContent.trim();
-                payFee(response.application.id, feeStr, cname);
+                payFee(response.application._id, feeStr, cname);
                 setButtonLoading(btn, false);
             } catch(e) { showToast('error', 'Error', e.message); setButtonLoading(btn, false); }
         });
